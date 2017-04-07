@@ -8,7 +8,8 @@ class WeatherRecord {
     }
 }
 
-let weatherApp = angular.module('app', ["angucomplete"]);
+let APIUrl = "http://178.79.140.126/api/";
+let weatherApp = angular.module('app', ["angucomplete-alt"]);
 
 let parse = function (data) {
     console.dir(data);
@@ -21,16 +22,31 @@ let parse = function (data) {
     }
     return { today: today, forecast: output };
 }
+let parseCity = function (cityData) {
+    let tmp = cityData.structured_formatting;
+    return {
+        name: tmp.main_text,
+        location: tmp.secondary_text,
+        id: cityData.place_id
+    }
+}
 
-
-weatherApp.controller('MainCtrl', function ($scope, $http) {
+weatherApp.controller('MainCtrl', function ($scope, $http, $q) {
     $scope.data = {}
     $scope.countries = {}
     $scope.data.isVisible = undefined;
     angular.element(function () {
-        $http.get("http://178.79.140.126/api/forecast?latitude=50.06465009999999&longitude=19.9449799&source=WORLD_WEATHER").then(function (data) {
-            $scope.weather = parse(data.data);
-        });
+        console.log("init");
     });
+    $scope.cities = [];
+    $scope.searchAPI = function (userInputString, timeoutPromise) {
+        return $http.get(APIUrl + 'cities/search?byName=' + userInputString)
+            .then(function (foo) {
 
+                console.log("ok");
+                $scope.cities = foo.data.predictions.map(parseCity);
+                // console.log($scope.cities);
+                // timeoutPromise.resolve($scope.cities, httpCanceller);
+            });
+    }
 });

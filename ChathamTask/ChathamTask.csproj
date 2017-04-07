@@ -17,7 +17,12 @@
 
   <ItemGroup>
     <Content Include="wwwroot\css\weather.css" />
+    <Content Include="wwwroot\js\custom\autocomplete.js" />
+    <Content Include="wwwroot\js\custom\autocomplete\autocomplete.js" />
+    <Content Include="wwwroot\js\custom\autocomplete\license.txt" />
+    <Content Include="wwwroot\js\custom\license.txt" />
     <Content Include="wwwroot\js\custom\main.js" />
+    <Content Include="wwwroot\js\custom\README.md" />
     <Content Include="wwwroot\js\custom\weather.js" />
   </ItemGroup>
   <ItemGroup>
@@ -30,6 +35,9 @@
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\" />
   </ItemGroup>
 
 </Project>
