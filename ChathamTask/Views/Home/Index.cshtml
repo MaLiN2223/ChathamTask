@@ -1,41 +1,38 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-<style>
-.weather-board{
 
+@section Styles {
+    <link href="~/css/weather.css" rel="stylesheet" asp-file-version="true" type="text/css" />
+    <link hr­ef="~/lib/allmighty-autocomplete/style/autocomplete.css" rel="stylesheet" type="text/css" />
+ 
 }
-.day{
-    text-align: right;
-    font-size: 30px; 
-}
-.weather-tile{
-     border: 1px;
-     border-style: dotted;
-}
-.input-city{
+<div style="height: 300px">
     
-}
-</style>
-<div ng-app="plunker">
-    <div ng-controller="MainCtrl"> 
-        <div>
-<input class="input-city"></input>
-            </div>
-        <div class="weather-board">
-        <div ng-repeat="x in records" class="weather-tile">
-            <div class="day">{{x.day}}</div>
-            <div class="temperature">
-                <div>
-                    {{x.temperature}}, {{x.temperature}}
+</div>
+<div ng-app="app">
+    <div ng-controller="MainCtrl">
+        <autocomplete ng-model="" data="movies" on-type="updateMovies"></autocomplete>
+        @*<div class="weather-board">
+            <div class="weather-today" ng-model="weather.today">
+                <div class="day">{{date}}</div>
+                <div class="temperature">
+                    {{temperature.max}}, {{temperature.min}}
                 </div>
             </div>
         </div>
-        </div>
-    </div> 
+        <div ng-repeat="x in weather.forecast" class="weather-tile">
+            <div class="day">{{x.date}}</div>
+            <div class="temperature">
+                <div>
+                    {{x.temperature.max}}, {{x.temperature.min}}
+                </div>
+            </div>
+        </div>*@
     </div>
 </div>
 
-
-<script src="~/lib/angular/angular.js"></script>
-<script src="~/js/custom/main.js"></script>
+@section Scripts {
+    <script type="text/javascript" src="~/lib/allmighty-autocomplete/script/autocomplete.js"></script>
+    <script src="~/js/custom/weather.js"></script>
+}

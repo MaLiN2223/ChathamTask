@@ -1,5 +1,4 @@
-﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -7,17 +6,17 @@
     <title>@ViewData["Title"] - ChathamTask</title>
 
     <environment names="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" /> 
     </environment>
     <environment names="Staging,Production">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" /> 
     </environment>
-    @Html.Raw(JavaScriptSnippet.FullScript)
+    @RenderSection("Styles", required: false)
 </head>
+
+
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
@@ -32,9 +31,6 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <!--<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>-->
                     <li><a href="https://github.com/MaLiN2223/ChathamTask">GitHub repo</a></li>
                     <li><a href="https://github.com/Chatham/fe-test-task">Task data</a></li>
                 </ul>
@@ -51,9 +47,8 @@
 
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-        <script sc="~/lib/angular/angular.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script> 
+        <script src="~/lib/angular/angular.js"></script>   
     </environment>
     <environment names="Staging,Production">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
@@ -70,8 +65,7 @@
         </script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"
                 asp-fallback-src="~/lib/angular/angular.min.js"
-                asp-fallback-test="window.angular"></script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
+                asp-fallback-test="window.angular"></script> 
 
     </environment>
 
