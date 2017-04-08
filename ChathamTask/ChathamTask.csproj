@@ -9,20 +9,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\js\custom\autocomplete\**" />
     <Compile Remove="wwwroot\lib\autocomplete-master - Copy\**" />
+    <Content Remove="wwwroot\js\custom\autocomplete\**" />
     <Content Remove="wwwroot\lib\autocomplete-master - Copy\**" />
+    <EmbeddedResource Remove="wwwroot\js\custom\autocomplete\**" />
     <EmbeddedResource Remove="wwwroot\lib\autocomplete-master - Copy\**" />
+    <None Remove="wwwroot\js\custom\autocomplete\**" />
     <None Remove="wwwroot\lib\autocomplete-master - Copy\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="wwwroot\css\weather.css" />
-    <Content Include="wwwroot\js\custom\autocomplete.js" />
-    <Content Include="wwwroot\js\custom\autocomplete\autocomplete.js" />
-    <Content Include="wwwroot\js\custom\autocomplete\license.txt" />
-    <Content Include="wwwroot\js\custom\license.txt" />
-    <Content Include="wwwroot\js\custom\main.js" />
-    <Content Include="wwwroot\js\custom\README.md" />
     <Content Include="wwwroot\js\custom\weather.js" />
   </ItemGroup>
   <ItemGroup>

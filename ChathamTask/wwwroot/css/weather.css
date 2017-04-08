@@ -1,14 +1,25 @@
 ﻿.weather-board {
+    padding-top: 70px;
+    padding-bottom: 70px;
 }
 
 .day {
-    text-align: right;
+    text-align: right; 
     font-size: 30px;
 }
 
-.weather-tile {
+.forecast-tile {
     border: 1px;
+    height: 70px;
     border-style: dotted;
+    background-color: green;
+}
+
+
+.forecast-tiles {
+    min-width: 40%;
+    min-height: 420px;
+    float: right;
 }
 
 .input-city {
@@ -18,6 +29,11 @@
 }
 
 .weather-today {
+    background-color: red;
+    float: left;
+    width: 60%;
+    min-width: 50%;
+    height: 420px;
 }
 
 
@@ -29,40 +45,55 @@
     position: relative;
 }
 
-.autocomplete input {
-    font-size: 1.2em;
-    width: 100%;
-    padding: 0.4em;
-}
+    .autocomplete input {
+        font-size: 1.2em;
+        width: 100%;
+        padding: 0.4em;
+    }
 
-.autocomplete ul {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    border-left: 1px solid #888;
-    border-right: 1px solid #888;
-    border-bottom: 1px solid #888;
-    z-index: 1;
-}
+    .autocomplete ul {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        border-left: 1px solid #888;
+        border-right: 1px solid #888;
+        border-bottom: 1px solid #888;
+        z-index: 1;
+    }
 
-.autocomplete li {
-    text-align: left;
-    list-style: none;
-    width: 100%;
-    padding: 0.4em;
-    background-color: #fff;
-}
+    .autocomplete li {
+        text-align: left;
+        list-style: none;
+        width: 100%;
+        padding: 0.4em;
+        background-color: #fff;
+    }
 
-.autocomplete li.active {
-    width: 100%;
-    background-color: #4bf;
-}
+        .autocomplete li.active {
+            width: 100%;
+            background-color: #4bf;
+        }
 
-.autocomplete .highlight {
-    background-color: #E2E2E2;
-}
+    .autocomplete .highlight {
+        background-color: #E2E2E2;
+    }
 
-.autocomplete li.active .highlight {
-    background: #666;
-    color: #fff;
+    .autocomplete li.active .highlight {
+        background: #666;
+        color: #fff;
+    }
+
+
+
+
+@media all and (max-width: 1000px) {
+    #left, #right {
+        float: none;
+        width: 100%;
+        margin: 0px;
+    }
+    .weather-tile {
+        height: 150px;
+        background-color: blue;
+    }
 }

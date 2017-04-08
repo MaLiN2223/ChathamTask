@@ -3,53 +3,49 @@
 }
 
 @section Styles {
-    <link href="~/lib/angucomplete/angucomplete.css" rel="stylesheet" asp-file-version="true" type="text/css" />
-    <link href="~/css/weather.css" rel="stylesheet" asp-file-version="true" type="text/css" />
+    <link href="~/css/weather.css" rel="stylesheet" />
 }
-<div style="height: 300px">
-
-</div>
 <div ng-app="app">
     <div ng-controller="MainCtrl">
         <div>
-            <angucomplete-alt id="members"
-                              placeholder="Search members"
-                              pause="1"
-                              selected-object="testObj"
-                              title-field="city"
-                              description-field="country"
-                              remote-api-handler="searchAPI"
-                              minlength="1"
-                              input-class="form-control form-control-small" />
-
+            <input />
         </div>
-        <div class="weather-board">
-            <div class="weather-today" ng-model="weather.today">
-                <div class="day">{{date}}</div>
+        <div ng-if="weather.isVisible" class="weather-board">
+
+            <div class="weather-today" data-ng-model="weather.today" id="left">
+                <div class="day">
+                    {{weather.today.date}}
+                </div>
                 <div class="temperature">
-                    {{temperature.max}}, {{temperature.min}}
+                    {{weather.today.temperature.max}}, {{weather.today.temperature.min}}
                 </div>
             </div>
-        </div>
-        <div ng-repeat="x in weather.forecast" class="weather-tile">
-            <div class="day">{{x.date}}</div>
-            <div class="temperature">
-                <div>
-                    {{x.temperature.max}}, {{x.temperature.min}}
-                </div>
-            </div>
-        </div>
 
-        <div>
-            HAAAAAAAAAAAALO
+            <div class="forecast-tiles" id="right">
+                <div ng-repeat="x in weather.forecast" class="forecast-tile">
+                    <div class="day">
+                        {{x.date}}
+                    </div>
+                    <div class="temperature">
+                        <div>
+                            {{x.temperature.max}}, {{x.temperature.min}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-        <div>
-            Czemu ta dupa nie dziala{{cities[0]}}?
+        <div ng-if="!weather.isVisible" class="weather-board">
+            {{weather.problemReason}}
+        </div>
+        <div ng-model="position">
+            Lat :{{position.latitude}},
+            Long : {{position.longitude}}
         </div>
     </div>
 </div>
 
 @section Scripts {
-    <script src="~/lib/angucomplete-alt/angucomplete-alt.js"></script>
+    <script src="~/lib/moment/moment.js"></script>
     <script src="~/js/custom/weather.js"></script>
 }

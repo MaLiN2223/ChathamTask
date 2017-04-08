@@ -1,25 +1,26 @@
 {
-  "name": "ChathamTask",
-  "homepage": "https://github.com/MaLiN2223/ChathamTask",
-  "authors": [
-    "MaLiN2223 <szyszka45@gmail.com>"
-  ],
-  "description": "",
-  "main": "",
-  "license": "MIT",
-  "private": true,
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "wwwroot/lib",
-    "test",
-    "tests"
-  ],
-  "dependencies": {
-    "bootstrap": "3.3.7",
-    "angular": "1.6.3",
-    "jquery": "^3.2.1",
-    "angucomplete-alt": "^3.0.0"
-  }
+    "name": "ChathamTask",
+    "homepage": "https://github.com/MaLiN2223/ChathamTask",
+    "authors": [
+        "MaLiN2223 <szyszka45@gmail.com>"
+    ],
+    "description": "",
+    "main": "",
+    "license": "MIT",
+    "private": true,
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "wwwroot/lib",
+        "test", 
+        "tests"
+    ],
+    "dependencies": {
+        "bootstrap": "3.3.7",
+        "angular": "1.6.3",
+        "jquery": "^3.2.1",
+        "ngAutocomplete": "1.0.0",
+        "moment" :  "2.14.1" 
+    }
 }
