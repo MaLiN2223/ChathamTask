@@ -6,29 +6,47 @@
     <link href="~/css/weather.css" rel="stylesheet" />
 }
 <div ng-app="app">
-    <div ng-controller="MainCtrl">
+    <div ng-controller="MainCtrl" class="weather-board">
         <div>
-            <input />
+            <div class="city-input">
+                <form>asd</form>
+            </div>
         </div>
-        <div ng-if="weather.isVisible" class="weather-board">
-
+        <div ng-if="weather.isVisible">
             <div class="weather-today" data-ng-model="weather.today" id="left">
-                <div class="day">
-                    {{weather.today.date}}
+                <div id="weather-today-up">
+                    <div>
+                        <p class="condition">{{weather.displayed.condition}}</p>
+                        <div>
+                            {{weather.displayed.temperature}}&#8451;
+                        </div>
+                    </div>
+                    <img ng-src="{{weather.displayed.image}}" />
                 </div>
-                <div class="temperature">
-                    {{weather.today.temperature.max}}, {{weather.today.temperature.min}}
+                <div id="weather-today-down">
+                    DOWN
                 </div>
             </div>
 
             <div class="forecast-tiles" id="right">
-                <div ng-repeat="x in weather.forecast" class="forecast-tile">
+
+                <div class="forecast-tile">
+                    <div class="day">Now</div>
+                    <div class="temperature">
+                        <div>
+                            Temperature: {{weather.today.temperature}}&#8451;
+                        </div>
+                    </div>
+                </div>
+                <div ng-repeat="x in weather.forecast" ng-click="changeDisplayed(x.id)" class="forecast-tile">
                     <div class="day">
                         {{x.date}}
                     </div>
+
                     <div class="temperature">
                         <div>
-                            {{x.temperature.max}}, {{x.temperature.min}}
+                            Max:{{x.temperature.max}}&#8451;,
+                            Min:{{x.temperature.min}}&#8451;
                         </div>
                     </div>
                 </div>
@@ -38,7 +56,7 @@
         <div ng-if="!weather.isVisible" class="weather-board">
             {{weather.problemReason}}
         </div>
-        <div ng-model="position">
+        <div ng-model="position" class="position">
             Lat :{{position.latitude}},
             Long : {{position.longitude}}
         </div>

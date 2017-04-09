@@ -3,7 +3,7 @@ const API = {
     url: "http://178.79.140.126/api/"
 };
 var locale = window.navigator.userLanguage || window.navigator.language;
-moment.locale(locale);  
+moment.locale(locale);
 
 (function () {
     API.cityByName = API.url + 'cities/search?byName=';
@@ -21,32 +21,77 @@ moment.locale(locale);
 // end API init
 // Utils
 let now = moment().hours(0);
-let getDate = function () {
-
-}
-class WeatherRecord {
-    constructor(date, temperatureMin, temperatureMax, apparentTemperatureMin, apparentTemperatureMax, humidity, pressure, cloudCover) {
-        let tmp = moment(date); 
-        let diff = Math.ceil(moment(date).hours(0).diff(now, "days", true));
-        if (diff === 0) {
-            tmp = "Today";
-        }
-        else if (diff === 1) {
-            tmp = "Tomorrow";
-        }
-        else if (diff === 2) {
-            tmp = "After tomorrow";
-        } else {
-            tmp = tmp.format("D MMMM");
-        }
-        this.date = tmp;
-        this.temperature = { min: temperatureMin, max: temperatureMax, apparentMin: apparentTemperatureMin, apparentMax: apparentTemperatureMax };
-        this.humidity = humidity;
-        this.pressure = pressure;
-        this.cloudCover = cloudCover;
+let getDate = function (date) {
+    let tmp = moment(date);
+    let diff = Math.ceil(moment(date).hours(0).diff(now, "days", true));
+    if (diff === 0) {
+        return "Today";
+    }
+    else if (diff === 1) {
+        return "Tomorrow";
+    }
+    else if (diff === 2) {
+        return "After tomorrow";
+    } else {
+        return tmp.format("D MMMM");
     }
 }
-
+class ForecastRecord {
+    constructor(data, id) {
+        this.date = getDate(data.date);
+        this.temperature = {
+            min: data.temperatureMin,
+            max: data.temperatureMax,
+            apparentMin: data.apparentTemperatureMin,
+            apparentMax: data.apparentTemperatureMax,
+        };
+        this.humidity = data.humidity;
+        this.pressure = data.pressure;
+        this.cloudCover = data.cloudCover;
+        this.condition = "cloudy";
+        this.image = "/images/sun.jpeg";
+        this.id = id;
+    }
+}
+class CurrentRecord {
+    constructor(data) {
+        this.date = "Now";
+        this.temperature = data.temperature;
+        this.humidity = data.humidity;
+        this.pressure = data.pressure;
+        this.cloudCover = data.cloudCover;
+        this.condition = "cloudy";
+        this.image = "/images/sun.jpeg";
+        this.id = -1;
+    }
+}
+let displaytWeatherFromForecast = function (obj) {
+    return {
+        date: obj.date,
+        temperature: obj.temperature.max - obj.temperature.min,
+        apparentTemperature: obj.temperature.apparentMax - obj.temperature.apparentMin,
+        humidity: obj.humidity,
+        pressure: obj.pressure,
+        cloudCover: obj.cloudCover,
+        condition: obj.condition,
+        image: obj.image,
+        id: obj.id
+    };
+}
+let displayWeatherFromCurrent = function (obj) {
+    console.log(obj);
+    return {
+        date: obj.date,
+        temperature: obj.temperature,
+        apparentTemperature: obj.apparentTemperature,
+        humidity: obj.humidity,
+        pressure: obj.pressure,
+        cloudCover: obj.cloudCover,
+        condition: obj.condition,
+        image: obj.image,
+        id: obj.id
+    };
+}
 class CityData {
     constructor(name, location, id) {
         this.name = name;
@@ -54,13 +99,13 @@ class CityData {
         this.id = id;
     }
 }
-let parseWeather = function (data) {
-    const today = new WeatherRecord(data.currently.date, data.currently.temperature);
 
+let parseWeather = function (data) {
+    const today = new CurrentRecord(data.currently);
     let arr = data.futureForecasts;
     const output = [];
     for (let i = 0; i < arr.length; ++i) {
-        output.push(new WeatherRecord(arr[i].date, arr[i].temperatureMin));
+        output.push(new ForecastRecord(arr[i], i));
     }
     return { today: today, forecast: output };
 }
@@ -69,7 +114,6 @@ let parseCity = function (cityData) {
     return new CityData(tmp.main_text, tmp.secondary_text, cityData.place_id);
 }
 // end Utils
-
 
 let weatherApp = angular.module('app', []);
 
@@ -106,7 +150,6 @@ weatherApp.factory('weatherService', function ($http) {
 });
 
 
-
 weatherApp.controller('MainCtrl', function ($scope, $http, locationService, weatherService) {
     const init = function () {
         $scope.cities = [];
@@ -116,12 +159,25 @@ weatherApp.controller('MainCtrl', function ($scope, $http, locationService, weat
             source: "WORLD_WEATHER"
         }
         $scope.countries = {}
+        $scope.changeDisplayed = function (a) {
+            console.log(a);
+            if (a === -1) {
+                $scope.weather.displayed = $scope.weather.today;
+            } else {
+                console.log("changing to ");
+                console.log(displaytWeatherFromForecast($scope.weather.forecast[a]));
+                $scope.weather.displayed = displaytWeatherFromForecast($scope.weather.forecast[a]);
+            }
+
+        }
     };
     const refreshWeather = function () {
+        console.log("refreshing");
         $scope.weather.data = weatherService.getWeather($scope.position.latitude, $scope.position.longitude, $scope.weather.source)
             .then(function (response) {
                 const parsed = parseWeather(response.data);
                 $scope.weather.today = parsed.today;
+                $scope.weather.displayed = displayWeatherFromCurrent(parsed.today);
                 $scope.weather.forecast = parsed.forecast;
                 $scope.weather.isVisible = true;
             });
@@ -148,6 +204,7 @@ weatherApp.controller('MainCtrl', function ($scope, $http, locationService, weat
             });
         });
     };
+
     angular.element(function () {
         init();
         showWeather();
