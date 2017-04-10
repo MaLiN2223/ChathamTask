@@ -1,18 +1,35 @@
-﻿.weather-board {
+﻿body {
+    background-color: #DAE7F1;
+}
+
+.weather-board {
     padding-top: 70px;
     padding-bottom: 70px;
 }
 
-.day {
+.forecast-date {
     text-align: right;
     font-size: 30px;
 }
 
 .forecast-tile {
-    border: 1px;
+    border-bottom: 1px dotted;
     height: 70px;
-    border-style: dotted;
-    background-color: green;
+    padding: 12px;
+}
+
+.forecast-temperature {
+    font-size: 25px;
+    width: 30%;
+}
+
+.weather-image {
+    max-height: 150px;
+}
+
+.displayed-date {
+    font-size: 42px;
+    float: right;
 }
 
 .city-input {
@@ -20,18 +37,10 @@
     width: 50%;
 }
 
-.forecast-tiles {
-    min-width: 40%;
-    min-height: 490px;
-    float: right;
-}
 
 .input-city {
 }
 
-#weather-today-up {
-    height: 50%;
-}
 
 .condition {
     font-size: 23px;
@@ -40,15 +49,26 @@
 .temperature-today {
     width: 30px;
     position: fixed;
-    right: 0;
+}
+
+.forecast-tiles {
+    min-height: 490px;
+    width: 47%;
+    float: right;
+    background-color: #5682A3;
 }
 
 .weather-today {
-    background-color: red;
+    background-color: #B0C8DA;
     float: left;
-    width: 60%;
-    min-width: 50%;
+    width: 52%;
     height: 490px;
+    border-radius: 2%;
+    padding: 12px;
+}
+
+#weather-today-up {
+    height: 50%;
 }
 
 .position {

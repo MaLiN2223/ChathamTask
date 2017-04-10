@@ -3,7 +3,9 @@
 }
 
 @section Styles {
-    <link href="~/css/weather.css" rel="stylesheet" />
+<link href="~/css/weather.css" rel="stylesheet" />
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<link href="~/lib/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet" />
 }
 <div ng-app="app">
     <div ng-controller="MainCtrl" class="weather-board">
@@ -14,6 +16,7 @@
         </div>
         <div ng-if="weather.isVisible">
             <div class="weather-today" data-ng-model="weather.today" id="left">
+                <p class="displayed-date">{{weather.displayed.date}}</p>
                 <div id="weather-today-up">
                     <div>
                         <p class="condition">{{weather.displayed.condition}}</p>
@@ -21,7 +24,7 @@
                             {{weather.displayed.temperature}}&#8451;
                         </div>
                     </div>
-                    <img ng-src="{{weather.displayed.image}}" />
+                    <img ng-src="{{weather.displayed.image}}" class="weather-image" />
                 </div>
                 <div id="weather-today-down">
                     DOWN
@@ -30,20 +33,19 @@
 
             <div class="forecast-tiles" id="right">
 
-                <div class="forecast-tile">
+                <div class="forecast-tile" ng-click="changeDisplayed(-1)">
                     <div class="day">Now</div>
-                    <div class="temperature">
+                    <div class="forecast-temperature">
                         <div>
                             Temperature: {{weather.today.temperature}}&#8451;
                         </div>
                     </div>
                 </div>
                 <div ng-repeat="x in weather.forecast" ng-click="changeDisplayed(x.id)" class="forecast-tile">
-                    <div class="day">
+                    <div class="forecast-date">
                         {{x.date}}
                     </div>
-
-                    <div class="temperature">
+                    <div class="forecast-temperature">
                         <div>
                             Max:{{x.temperature.max}}&#8451;,
                             Min:{{x.temperature.min}}&#8451;
@@ -64,6 +66,6 @@
 </div>
 
 @section Scripts {
-    <script src="~/lib/moment/moment.js"></script>
-    <script src="~/js/custom/weather.js"></script>
+<script src="~/lib/moment/moment.js"></script>
+<script src="~/js/custom/weather.js"></script>
 }
