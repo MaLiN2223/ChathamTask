@@ -67,8 +67,8 @@ class CurrentRecord {
 let displaytWeatherFromForecast = function (obj) {
     return {
         date: obj.date,
-        temperature: obj.temperature.max - obj.temperature.min,
-        apparentTemperature: obj.temperature.apparentMax - obj.temperature.apparentMin,
+        temperature: (obj.temperature.max + obj.temperature.min) / 2,
+        apparentTemperature: (obj.temperature.apparentMax + obj.temperature.apparentMin) / 2,
         humidity: obj.humidity,
         pressure: obj.pressure,
         cloudCover: obj.cloudCover,
@@ -77,7 +77,6 @@ let displaytWeatherFromForecast = function (obj) {
     };
 }
 let displayWeatherFromCurrent = function (obj) {
-    console.log(obj);
     return {
         date: obj.date,
         temperature: obj.temperature,
@@ -159,13 +158,14 @@ weatherApp.factory('weatherService', function ($http) {
 });
 
 
-weatherApp.controller('MainCtrl', function ($scope, $http, locationService, weatherService) {
+weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService, weatherService) {
     const init = function () {
         $scope.city = {}
         $scope.weather = {
             isVisible: false,
             source: "FORECAST_IO"
         }
+        $scope.unit = $sce.trustAsHtml("&#8451");
         $scope.citiesParser = function (data) {
             data = data.data.predictions;
             return data.map(parseCity);
@@ -176,7 +176,7 @@ weatherApp.controller('MainCtrl', function ($scope, $http, locationService, weat
             if (a === -1) {
                 $scope.weather.displayed = $scope.weather.today;
             } else {
-                $scope.weather.displayed = displaytWeatherFromForecast($scope.weather.forecast[a]);
+                $scope.weather.displayed = $scope.weather.forecast[a];
             }
 
         };
@@ -189,7 +189,7 @@ weatherApp.controller('MainCtrl', function ($scope, $http, locationService, weat
             .then(function (response) {
                 const parsed = parseWeather(response.data);
                 $scope.weather.today = parsed.today;
-                $scope.weather.displayed = displayWeatherFromCurrent(parsed.today);
+                $scope.weather.displayed = parsed.today;
                 $scope.weather.forecast = parsed.forecast;
                 $scope.weather.isVisible = true;
             });

@@ -12,11 +12,21 @@
     font-size: 30px;
 }
 
-.forecast-tile {
+.forecast-table {
+    width: 100%;
+    font-size: 25px;
+}
+
+.forecast-tr {
     border-bottom: 1px dotted;
     height: 70px;
     padding: 12px;
 }
+
+    .forecast-tr > td { 
+        padding: 10px;
+    }
+
 
 .forecast-temperature {
     font-size: 25px;
@@ -36,11 +46,6 @@
     margin-bottom: 10px;
     width: 50%;
 }
-
-
-.input-city {
-}
-
 
 .condition {
     font-size: 23px;

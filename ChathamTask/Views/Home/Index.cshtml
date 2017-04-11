@@ -21,7 +21,7 @@
                         <div>
                             <p class="condition">{{weather.displayed.condition}}</p>
                             <div>
-                                {{weather.displayed.temperature}}&#8451;
+                                {{weather.displayed.temperature}}<span ng-bind-html="unit"></span>
                             </div>
                         </div>
                     </div>
@@ -31,25 +31,19 @@
                 </div>
 
                 <div class="forecast-tiles" id="right">
-                    <div class="forecast-tile" ng-click="changeDisplayed(-1)">
-                        <div class="day">Now</div>
-                        <div class="forecast-temperature">
-                            <div>
-                                Temperature: {{weather.today.temperature}}&#8451;
-                            </div>
-                        </div>
-                    </div>
-                    <div ng-repeat="x in weather.forecast" ng-click="changeDisplayed(x.id)" class="forecast-tile">
-                        <div class="forecast-date">
-                            {{x.date}}
-                        </div>
-                        <div class="forecast-temperature">
-                            <div>
-                                Max:{{x.temperature.max}}&#8451;,
-                                Min:{{x.temperature.min}}&#8451;
-                            </div>
-                        </div>
-                    </div>
+                    <table class="forecast-table">
+                        <tr ng-click="changeDisplayed(-1)" class="forecast-tr">
+                            <td>{{weather.today.temperature}}<span ng-bind-html="unit"></span></td>
+                            <td class="forecast-date">Now</td>
+
+                        </tr>
+                        <tr ng-repeat="x in weather.forecast" ng-click="changeDisplayed(x.id)" class="forecast-tr">
+                            <td>{{(x.temperature.max+x.temperature.max)/2}}<span ng-bind-html="unit"></span>,</td>
+                            <td>feels like {{(x.temperature.max+x.temperature.max)/2}}<span ng-bind-html="unit"></span>,</td>
+                            <td class="forecast-date">{{x.date}}</td>
+                        </tr>
+                    </table>
+
                 </div>
 
             </div>
