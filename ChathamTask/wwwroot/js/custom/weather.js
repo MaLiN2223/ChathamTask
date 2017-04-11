@@ -1,6 +1,6 @@
 // API init
 const API = {
-    url: "http://178.79.140.126/api/"
+    url: "http://codingchallenge.chathamfinancial.com/api/static/"
 };
 var locale = window.navigator.userLanguage || window.navigator.language;
 moment.locale(locale);
@@ -18,6 +18,7 @@ moment.locale(locale);
     };
 }
 )();
+
 // end API init
 // Utils
 let now = moment().hours(0);
@@ -49,7 +50,6 @@ class ForecastRecord {
         this.pressure = data.pressure;
         this.cloudCover = data.cloudCover;
         this.condition = "cloudy";
-        this.image = "/images/sun.jpeg";
         this.id = id;
     }
 }
@@ -61,7 +61,6 @@ class CurrentRecord {
         this.pressure = data.pressure;
         this.cloudCover = data.cloudCover;
         this.condition = "cloudy";
-        this.image = "/images/sun.jpeg";
         this.id = -1;
     }
 }
@@ -74,7 +73,6 @@ let displaytWeatherFromForecast = function (obj) {
         pressure: obj.pressure,
         cloudCover: obj.cloudCover,
         condition: obj.condition,
-        image: obj.image,
         id: obj.id
     };
 }
@@ -88,10 +86,10 @@ let displayWeatherFromCurrent = function (obj) {
         pressure: obj.pressure,
         cloudCover: obj.cloudCover,
         condition: obj.condition,
-        image: obj.image,
         id: obj.id
     };
 }
+
 class CityData {
     constructor(name, location, id) {
         this.name = name;
@@ -109,13 +107,20 @@ let parseWeather = function (data) {
     }
     return { today: today, forecast: output };
 }
+let toDropdown = function (city) {
+    return {
+        title: city.name,
+        subTitle: city.location,
+        id: city.id
+    };
+}
 let parseCity = function (cityData) {
     const tmp = cityData.structured_formatting;
-    return new CityData(tmp.main_text, tmp.secondary_text, cityData.place_id);
+    return toDropdown(new CityData(tmp.main_text, tmp.secondary_text, cityData.place_id));
 }
 // end Utils
 
-let weatherApp = angular.module('app', []);
+let weatherApp = angular.module('app', ['autosuggest']);
 
 weatherApp.factory('locationService', function ($q, $window, $http) {
     function getCurrentPosition() {
@@ -130,13 +135,17 @@ weatherApp.factory('locationService', function ($q, $window, $http) {
                 });
         }
         return deferred.promise;
-    }
+    };
     function getCities(partialName) {
         return $http.get(API.cityByName + partialName);
-    }
+    };
+    function getCity(lat, long) {
+        return $http.get(API.cityByLocation(lat, long));
+    };
     return {
         getCurrentPosition: getCurrentPosition,
-        getCities: getCities
+        getCities: getCities,
+        getCity: getCity
     };
 });
 
@@ -152,28 +161,31 @@ weatherApp.factory('weatherService', function ($http) {
 
 weatherApp.controller('MainCtrl', function ($scope, $http, locationService, weatherService) {
     const init = function () {
-        $scope.cities = [];
-        $scope.data = {}
+        $scope.city = {}
         $scope.weather = {
             isVisible: false,
-            source: "WORLD_WEATHER"
+            source: "FORECAST_IO"
         }
-        $scope.countries = {}
+        $scope.citiesParser = function (data) {
+            data = data.data.predictions;
+            return data.map(parseCity);
+        };
+        $scope.getCities = locationService.getCities;
+        $scope.currentCity = undefined;
         $scope.changeDisplayed = function (a) {
-            console.log(a);
             if (a === -1) {
                 $scope.weather.displayed = $scope.weather.today;
             } else {
-                console.log("changing to ");
-                console.log(displaytWeatherFromForecast($scope.weather.forecast[a]));
                 $scope.weather.displayed = displaytWeatherFromForecast($scope.weather.forecast[a]);
             }
 
-        }
+        };
+        $scope.onCitySelect = function (e) {
+            console.log(e);
+        };
     };
     const refreshWeather = function () {
-        console.log("refreshing");
-        $scope.weather.data = weatherService.getWeather($scope.position.latitude, $scope.position.longitude, $scope.weather.source)
+        $scope.weather.data = weatherService.getWeather($scope.city.latitude, $scope.city.longitude, $scope.weather.source)
             .then(function (response) {
                 const parsed = parseWeather(response.data);
                 $scope.weather.today = parsed.today;
@@ -185,28 +197,32 @@ weatherApp.controller('MainCtrl', function ($scope, $http, locationService, weat
     const hideWeather = function (reason) {
         $scope.weather.isVisible = false;
         $scope.weather.problemReason = reason;
-    }
+    };
+    const setCityByCoords = function (lat, long) {
+        locationService.getCity(lat, long).then(function (data) {
+            data = data.data;
+            [$scope.city.name, $scope.city.country] = data.formatted_address.split(",");
+            $scope.city.id = data.place_id;
+        });
+    };
+    const updateCityByCoords = function (coords) {
+        $scope.city.latitude = coords.latitude;
+        $scope.city.longitude = coords.longitude;
+        setCityByCoords(coords.latitude, coords.longitude);
+        refreshWeather();
+    };
     const showWeather = function () {
         locationService.getCurrentPosition().then(function (data) {
-            $scope.position = {
-                latitude: data.coords.latitude,
-                longitude: data.coords.longitude
-            }
-            refreshWeather();
+            updateCityByCoords(data.coords);
         }, function () {
-            //TODO : create this service on 178.79.140.126
-            $.getJSON('//freegeoip.net/json/?callback=?', function (data) {
-                $scope.position = {
-                    latitude: data.latitude,
-                    longitude: data.longitude
-                }
-                refreshWeather();
+            $.getJSON("//freegeoip.net/json/?callback=?", function (data) {
+                updateCityByCoords(data.coords);
             });
         });
     };
-
     angular.element(function () {
         init();
         showWeather();
     });
 });
+
