@@ -8,22 +8,12 @@
     padding-bottom: 70px;
 }
 
-.forecast-table {
-    width: 100%;
+.temperature {
+    height: 144px;
 }
 
-.forecast-row {
-    border-bottom: 1px dotted;
-} 
-.forecast-temperature {
-    font-size: 25px;
-    width: 30%;
-}
-.temperature {
-    min-height: 144px;
-}
 .weather-current {
-    font-size: 30px; 
+    font-size: 30px;
 }
 
 .weather-additional {
@@ -37,30 +27,17 @@
     float: right;
 }
 
-.city-input {
-    margin-bottom: 10px;
-    width: 50%;
-}
-
-.condition {
-    font-size: 23px;
-}
-
-.temperature-today {
-    width: 30px;
-    position: fixed;
-}
-
 .forecast-container {
     min-height: 370px;
     font-size: 19px;
 }
 
-.forecast-settings {
-}
-
 .site-header {
     font-size: 50px;
+}
+
+.temperature-big {
+    font-size: 100px
 }
 
 .forecast-bordered-container {
@@ -122,6 +99,9 @@
     .forecast-tiles > div {
         padding: 10px 20px 0 0;
     }
+    .temperature-big {
+        font-size: 100px;
+    }
 }
 
 @media (max-width: 990px) {
@@ -129,16 +109,26 @@
         font-size: 18px;
     }
 }
+@media(min-width: 768px) {
 
+    .temperature-big {
+        font-size: 80px;
+    }
+}
 @media all and (max-width: 768px) {
     .forecast-tiles {
         margin-top: 3px;
         padding: 0;
     }
-
-        .forecast-tiles > div {
-            padding: 1px 5px 0 0;
-        }
+    .temperature-big {
+        font-size: 60px;
+    }
+    .site-header {
+        font-size: 28px;    
+    } 
+    .forecast-tiles > div {
+        padding: 1px 5px 0 0;
+    }
 }
 
 /*FROM : https://gist.github.com/alexandrevicenzi/680147013e902a4eaa5d */

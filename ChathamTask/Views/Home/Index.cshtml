@@ -15,14 +15,14 @@
             <div class="row">
 
                 <div class="col-xs-12 col-sm-12 col-md-11 col-lg-12">
-                    <div class="site-header col-xs-1 col-sm-5">
+                    <div class="site-header col-xs-5 col-sm-5">
                         WEATHER
                     </div>
-                    <div class="col-xs-1 col-sm-3" style="padding-top: 10px;">
+                    <div class="col-xs-2 col-sm-3" style="padding-top: 10px;">
                         <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" style="font-size: 50px;" ng-if="isRefreshing == true"></span>
                     </div>
-                    <div class="col-xs-1 col-sm-1">
-                        <toggle ng-model="degreesValue" ng-change="changeDegrees()" on="Celcius" off="Farenheit" style="min-width: 200px" onstyle="btn-default" offstyle="btn-default"></toggle>
+                    <div class="col-xs-4 col-sm-1">
+                        <toggle ng-model="degreesValue" ng-change="changeDegrees()" on="Fahrenheit" off="Celcius" style="min-width: 200px" onstyle="btn-default" offstyle="btn-default"></toggle>
                         <br />
                         <toggle ng-model="apiValue" ng-change="changeApi()" on="forecast.io" off=" World Weather" onstyle="btn-default" offstyle="btn-default"></toggle>
                     </div>
@@ -33,43 +33,43 @@
 
 
                     <div class="row">
-                        <div class="col-xs-8 col-sm-3 col-md-6 col-lg-9">
+                        <div class="col-xs-8 col-sm-4 col-md-6 col-lg-9">
                             <autosuggest get-cities="getCities" parser="citiesParser" on-city-select="onCitySelect" displayedCity="{{weather.displayed.city}}"></autosuggest>
                         </div>
-                        <div class="col-xs-2 col-sm-3 col-md-6 col-lg-3">
+                        <div class="col-xs-2 col-sm-7 col-md-6 col-lg-3">
                             <p class="displayed-date">{{weather.displayed.date}}</p>
                         </div>
                     </div>
 
                     <div ng-if="weather.displayed.expanded !==undefined" class="row weather-current">
 
-                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                             Temperature:
                             <div ng-if="weather.displayed.expanded == false">
-                                <div class="temperature" style="font-size: 100px">
-                                    {{weather.displayed.temperature}}<span class="unit" ng-bind-html="unit"></span>
+                                <div class="temperature temperature-big" >
+                                    {{weather.displayed.temperature}}<span ng-bind-html="unit"></span>
                                 </div>
 
                             </div>
                             <div ng-if="weather.displayed.expanded == true">
-                                <div class="temperature" style="font-size: 60px">
-                                    {{weather.displayed.temperature.min}} - {{weather.displayed.temperature.max}}<span class="unit" ng-bind-html="unit"></span>
+                                <div class="temperature" style="font-size: 50px">
+                                    {{weather.displayed.temperature.min}}-{{weather.displayed.temperature.max}}<span ng-bind-html="unit"></span>
                                 </div>
                             </div>
                             Feels like:
                             <div ng-if="weather.displayed.expanded == false">
-                                {{weather.displayed.apparentTemperature}}<span class="unit" ng-bind-html="unit"></span>
+                                {{weather.displayed.apparentTemperature}}<span ng-bind-html="unit"></span>
                             </div>
                             <div ng-if="weather.displayed.expanded == true">
-                                {{weather.displayed.temperature.apparentMin}} - {{weather.displayed.temperature.apparentMax}}<span class="unit" ng-bind-html="unit"></span>
+                                {{weather.displayed.temperature.apparentMin}} - {{weather.displayed.temperature.apparentMax}}<span ng-bind-html="unit"></span>
                             </div>
                         </div>
 
 
 
-                        <div class="row col-xs-12 col-sm-6 col-md-6 col-lg-6 weather-additional">
-                            Humidity: {{weather.displayed.humidityDescription}}<br />
-                            Pressure: {{weather.displayed.pressureDescription}}<br />
+                        <div class="row col-xs-6 col-sm-6 col-md-6 col-lg-6 weather-additional">
+                            <b>Humidity:</b> {{weather.displayed.humidityDescription}}<br />
+                            <b>Pressure:</b> {{weather.displayed.pressureDescription}}<br />
                             {{weather.displayed.coverDescription}}
 
                         </div>
@@ -79,23 +79,23 @@
                 <div class="col-xs-12 col-sm-6  col-md-5 col-lg-6 forecast-container " id="right">
                     <div class=" forecast-tiles" ng-if="weather.displayed.expanded !==undefined">
                         <div ng-click="changeDisplayed(-1)" class="row forecast-tile forecast-bordered-container">
-                            <div class="col-xs-1 col-sm-3 ">
+                            <div class="col-xs-2 col-sm-3 ">
                                 {{weather.today.temperature}}<span ng-bind-html="unit"></span>
                             </div>
                             <div class="col-xs-4 col-sm-4 ">
                                 feels like {{weather.today.temperature}}<span ng-bind-html="unit"></span>
                             </div>
-                            <div class="col-xs-5 col-sm-5">Now</div>
+                            <div class="col-xs-5 col-sm-4">Now</div>
 
                         </div>
                         <div class="row forecast-tile forecast-bordered-container" ng-repeat="x in weather.forecast" ng-click="changeDisplayed(x.id)">
-                            <div class="col-xs-1 col-sm-3 ">
+                            <div class="col-xs-2 col-sm-3 ">
                                 {{x.average}}<span ng-bind-html="unit"></span>
                             </div>
                             <div class="col-xs-4 col-sm-4 ">
                                 feels like {{x.apparentAverage}}<span ng-bind-html="unit"></span>
                             </div>
-                            <div class="col-xs-5 col-sm-5">{{x.date}}</div>
+                            <div class="col-xs-5 col-sm-4">{{x.date}}</div>
                         </div>
                     </div>
                 </div>
