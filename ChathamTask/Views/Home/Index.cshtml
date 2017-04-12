@@ -5,15 +5,16 @@
 @section Styles {
     <link href="~/css/weather.css" rel="stylesheet" asp-file-version="true" />
     <link href="~/js/custom/autosuggest/main.css" rel="stylesheet" asp-file-version="true" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.css" />
 }
 <div>
 
 
     <div ng-app="app" id="app2">
 
-        <div ng-controller="MainCtrl" class="weather-board">
-            <div ng-if="weather.isVisible">
-                <div class="weather-today" data-ng-model="weather.today" id="left">
+        <div ng-controller="MainCtrl" class="weather-board forecast-container">
+            <div ng-if="weather.isVisible" class="row">
+                <div class="col-xs-12 col-sm-6  col-md-6 col-lg-6 weather-today" data-ng-model="weather.today" id="left">
 
                     <autosuggest get-cities="getCities" parser="citiesParser" on-city-select="onCitySelect"></autosuggest>
                     <p class="displayed-date">{{weather.displayed.date}}</p>
@@ -30,21 +31,26 @@
                     </div>
                 </div>
 
-                <div class="forecast-tiles" id="right">
-                    <table class="forecast-table">
-                        <tr ng-click="changeDisplayed(-1)" class="forecast-tr">
-                            <td>{{weather.today.temperature}}<span ng-bind-html="unit"></span></td>
-                            <td class="forecast-date">Now</td>
+                <div class="col-xs-12 col-sm-7  col-md-5 col-lg-6" id="right">
+                    <div class="forecast-box forecast-tiles">
+                        <div ng-click="changeDisplayed(-1)" class="row forecast-tile">
+                            <div class="col-xs-2 col-sm-3">{{weather.today.temperature}}<span ng-bind-html="unit"></span></div>
+                            <div class="col-xs-4 col-sm-4">feels like  {{weather.today.temperature}}<span ng-bind-html="unit"></span></div>
+                            <div class="col-xs-5 col-sm-5">Now</div>
 
-                        </tr>
-                        <tr ng-repeat="x in weather.forecast" ng-click="changeDisplayed(x.id)" class="forecast-tr">
-                            <td>{{(x.temperature.max+x.temperature.max)/2}}<span ng-bind-html="unit"></span>,</td>
-                            <td>feels like {{(x.temperature.max+x.temperature.max)/2}}<span ng-bind-html="unit"></span>,</td>
-                            <td class="forecast-date">{{x.date}}</td>
-                        </tr>
-                    </table>
-
+                        </div>
+                        <div class="row forecast-tile" ng-repeat="x in weather.forecast" ng-click="changeDisplayed(x.id)">
+                            <div class="col-xs-2 col-sm-3">
+                                {{(x.temperature.max+x.temperature.max)/2}}<span ng-bind-html="unit"></span>,
+                            </div>
+                            <div class="col-xs-4 col-sm-4">
+                                feels like {{(x.temperature.max+x.temperature.max)/2}}<span ng-bind-html="unit"></span>,
+                            </div>
+                            <div class="col-xs-5 col-sm-5">{{x.date}}</div>
+                        </div>
+                    </div>
                 </div>
+
 
             </div>
             <div ng-if="!weather.isVisible" class="weather-board">

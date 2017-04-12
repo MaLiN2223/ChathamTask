@@ -50,7 +50,7 @@ autosuggest.directive("autosuggest", function () {
                 };
                 $scope.displayed = false;
                 $scope.attributes = {
-                    "placeholder": "Find your city ...",
+                    "placeholder": "Find your city...",
                 };
                 $scope.$watch('searchCity',
                     function (newCity, oldCity) {

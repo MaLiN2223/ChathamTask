@@ -213,10 +213,12 @@ weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService
     };
     const showWeather = function () {
         locationService.getCurrentPosition().then(function (data) {
+            console.log(data);
             updateCityByCoords(data.coords);
         }, function () {
             $.getJSON("//freegeoip.net/json/?callback=?", function (data) {
-                updateCityByCoords(data.coords);
+                console.log(data);
+                updateCityByCoords(data);
             });
         });
     };
