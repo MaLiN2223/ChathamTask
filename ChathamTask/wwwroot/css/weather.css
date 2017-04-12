@@ -6,7 +6,8 @@
 .weather-board {
     padding-top: 70px;
     padding-bottom: 70px;
-} 
+}
+
 .temperature {
     height: 144px;
 }
@@ -24,13 +25,19 @@
 .displayed-date {
     font-size: 42px;
     float: right;
-} 
+}
+
 .forecast-container {
     min-height: 370px;
     font-size: 19px;
-} 
+}
+
 .site-header {
     font-size: 50px;
+}
+
+.temperature-big {
+    font-size: 100px
 }
 
 .forecast-bordered-container {
@@ -92,6 +99,9 @@
     .forecast-tiles > div {
         padding: 10px 20px 0 0;
     }
+    .temperature-big {
+        font-size: 100px;
+    }
 }
 
 @media (max-width: 990px) {
@@ -99,16 +109,26 @@
         font-size: 18px;
     }
 }
+@media(min-width: 768px) {
 
+    .temperature-big {
+        font-size: 80px;
+    }
+}
 @media all and (max-width: 768px) {
     .forecast-tiles {
         margin-top: 3px;
         padding: 0;
     }
-
-        .forecast-tiles > div {
-            padding: 1px 5px 0 0;
-        }
+    .temperature-big {
+        font-size: 60px;
+    }
+    .site-header {
+        font-size: 28px;    
+    } 
+    .forecast-tiles > div {
+        padding: 1px 5px 0 0;
+    }
 }
 
 /*FROM : https://gist.github.com/alexandrevicenzi/680147013e902a4eaa5d */
