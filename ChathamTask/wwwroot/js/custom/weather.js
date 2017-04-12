@@ -1,7 +1,7 @@
 // API init
 
 const API = {
-    url: "http://codingchallenge.chathamfinancial.com/api/"
+    url: "http://codingchallenge.chathamfinancial.com/api/static/"
 };
 
 var locale = window.navigator.userLanguage || window.navigator.language;
@@ -25,6 +25,8 @@ moment.locale(locale);
 )();
 
 // end API init
+
+
 // Utils
 let now = moment().hours(0);
 let getDate = function (date) {
@@ -114,6 +116,7 @@ class CurrentRecord extends Record {
         this.unit = "Fahrenheit";
     }
 }
+
 swapRecordUnit = function (record) {
     if (record.id === -1) { // current
         if (record.unit[0] === "F") {
@@ -145,6 +148,7 @@ swapRecordUnit = function (record) {
     }
     return record;
 }
+
 let parseWeather = function (data) { 
     const today = new CurrentRecord(data.currently);
     let arr = data.futureForecasts;
