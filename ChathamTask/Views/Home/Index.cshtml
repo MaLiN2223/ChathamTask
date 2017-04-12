@@ -47,21 +47,21 @@
                             Temperature:
                             <div ng-if="weather.displayed.expanded == false">
                                 <div class="temperature" style="font-size: 100px">
-                                    {{weather.displayed.temperature}}<span class="unit" ng-bind-html="unit"></span>
+                                    {{weather.displayed.temperature}}<span ng-bind-html="unit"></span>
                                 </div>
 
                             </div>
                             <div ng-if="weather.displayed.expanded == true">
                                 <div class="temperature" style="font-size: 60px">
-                                    {{weather.displayed.temperature.min}} - {{weather.displayed.temperature.max}}<span class="unit" ng-bind-html="unit"></span>
+                                    {{weather.displayed.temperature.min}} - {{weather.displayed.temperature.max}}<span ng-bind-html="unit"></span>
                                 </div>
                             </div>
                             Feels like:
                             <div ng-if="weather.displayed.expanded == false">
-                                {{weather.displayed.apparentTemperature}}<span class="unit" ng-bind-html="unit"></span>
+                                {{weather.displayed.apparentTemperature}}<span ng-bind-html="unit"></span>
                             </div>
                             <div ng-if="weather.displayed.expanded == true">
-                                {{weather.displayed.temperature.apparentMin}} - {{weather.displayed.temperature.apparentMax}}<span class="unit" ng-bind-html="unit"></span>
+                                {{weather.displayed.temperature.apparentMin}} - {{weather.displayed.temperature.apparentMax}}<span ng-bind-html="unit"></span>
                             </div>
                         </div>
 

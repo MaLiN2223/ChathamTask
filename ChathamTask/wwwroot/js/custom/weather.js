@@ -28,7 +28,7 @@ let getDate = function (date) {
     let tmp = moment(date);
     let diff = Math.ceil(moment(date).hours(0).diff(now, "days", true));
     if (diff === 0) {
-        return "Today"; 
+        return "Today";
     }
     if (diff === 1) {
         return "Tomorrow";
@@ -36,8 +36,9 @@ let getDate = function (date) {
         return tmp.format("dddd");
     }
 };
-Number.prototype.round = function () { 
-    return Number((this.toFixed(2)));
+
+Number.prototype.round = function () {
+    return Number((this.toFixed(1)));
 };
 
 class Record {
@@ -49,7 +50,7 @@ class Record {
     get pressureDescription() {
         return `${this.pressure} hPa`;
     }
-    get humidityDescription() { 
+    get humidityDescription() {
         let hum = (this.humidity * 100).round();
         return `${hum}%`;
     }
@@ -74,6 +75,7 @@ class Record {
         return "Sky obscured";
     }
 };
+
 class ForecastRecord extends Record {
     constructor(data, id, unit) {
         super(data.humidity, data.pressure, data.cloudCover);
@@ -88,35 +90,58 @@ class ForecastRecord extends Record {
         this.id = id;
         this.unit = unit;
         this.expanded = true;
+        this.unit = "Fahrenheit";
     }
     get average() {
-        return (this.temperature.min + this.temperature.max) / 2;
+        return ((this.temperature.min + this.temperature.max) / 2).round();
     }
     get apparentAverage() {
-        return (this.temperature.apparentMin + this.temperature.apparentMax) / 2;
+        return ((this.temperature.apparentMin + this.temperature.apparentMax) / 2).round();
     }
 }
+
 class CurrentRecord extends Record {
     constructor(data) {
-        console.log(data);
         super(data.humidity, data.pressure, data.cloudCover);
         this.date = "Now";
         this.temperature = data.temperature.round();
         this.apparentTemperature = data.apparentTemperature.round();
-        this.condition = "cloudy";
         this.id = -1;
         this.expanded = false;
+        this.unit = "Fahrenheit";
     }
 }
-
-class CityData {
-    constructor(name, location, id) {
-        this.name = name;
-        this.location = location;
-        this.id = id;
+swapRecordUnit = function (record) {
+    if (record.id === -1) { // current
+        if (record.unit[0] === "F") {
+            record.temperature = ((record.temperature - 32) / 1.8).round();
+            record.apparentTemperature = ((record.apparentTemperature - 32) / 1.8).round();
+            record.unit = "Celcius";
+        }
+        else {
+            record.temperature = ((record.temperature * 1.8) + 32).round();
+            record.apparentTemperature = ((record.apparentTemperature * 1.8) + 32).round();
+            record.unit = "Fahrenheit";
+        }
     }
+    else {
+        if (record.unit[0] === "F") {
+            record.temperature.min = ((record.temperature.min - 32) / 1.8).round();
+            record.temperature.max = ((record.temperature.max - 32) / 1.8).round();
+            record.temperature.apparentMin = ((record.temperature.apparentMin - 32) / 1.8).round();
+            record.temperature.apparentMax = ((record.temperature.apparentMax - 32) / 1.8).round();
+            record.unit = "Celcius";
+        }
+        else {
+            record.temperature.min = ((record.temperature.min * 1.8) + 32).round();
+            record.temperature.max = ((record.temperature.max * 1.8) + 32).round();
+            record.temperature.apparentMin = ((record.temperature.apparentMin * 1.8) + 32).round();
+            record.temperature.apparentMax = ((record.temperature.apparentMax * 1.8) + 32).round();
+            record.unit = "Fahrenheit";
+        }
+    }
+    return record;
 }
-
 let parseWeather = function (data) {
     const today = new CurrentRecord(data.currently);
     let arr = data.futureForecasts;
@@ -135,7 +160,7 @@ let toDropdown = function (city) {
 }
 let parseCity = function (cityData) {
     const tmp = cityData.structured_formatting;
-    return toDropdown(new CityData(tmp.main_text, tmp.secondary_text, cityData.place_id));
+    return toDropdown({ title: tmp.main_text, subTitle: tmp.secondary_text, id: cityData.place_id });
 }
 // end Utils
 
@@ -193,6 +218,9 @@ weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService
                 $scope.weather.forecast = parsed.forecast;
                 $scope.weather.isVisible = true;
                 $scope.isRefreshing = false;
+
+                $scope.changeDegrees();
+                console.log($scope.unit);
             });
     };
     const setCityByCoords = function (lat, long) {
@@ -232,7 +260,7 @@ weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService
         $scope.degreesDict = {
             "Celcius": $sce.trustAsHtml("&#8451"),
             true: $sce.trustAsHtml("&#8451"),
-            "Faranheit": $sce.trustAsHtml("&#8457"),
+            "Fahrenheit": $sce.trustAsHtml("&#8457"),
             false: $sce.trustAsHtml("&#8457")
         };
         $scope.apiDict = {
@@ -242,8 +270,8 @@ weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService
             false: "WORLD_WEATHER"
         };
         $scope.city = {};
-        $scope.apiValue = "forecast.io";
-        $scope.degreesValue = "Celcius";
+        $scope.apiValue = "World Weather";
+        $scope.degreesValue = "Fahrenheit";
         $scope.source = "";
         $scope.weather = {
             isVisible: false
@@ -253,6 +281,20 @@ weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService
     };
     const initScopeFunctions = function () {
         $scope.changeDegrees = function () {
+
+            var unit = $scope.degreesValue;
+            if ($scope.weather.today !== undefined && $scope.weather.today.unit !== unit) {
+                $scope.weather.today = swapRecordUnit($scope.weather.today);
+            }
+
+            if ($scope.weather.forecast !== undefined) {
+                $scope.weather.forecast = $scope.weather.forecast.map(function (element) {
+                    if (element.unit !== unit) {
+                        return swapRecordUnit(element);
+                    }
+                    return element;
+                });
+            } 
             $scope.unit = $scope.degreesDict[$scope.degreesValue];
         }
         $scope.changeApi = function (noRefresh) {
