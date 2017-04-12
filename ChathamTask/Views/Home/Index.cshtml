@@ -85,7 +85,7 @@
                             <div class="col-xs-4 col-sm-4 ">
                                 feels like {{weather.today.temperature}}<span ng-bind-html="unit"></span>
                             </div>
-                            <div class="col-xs-5 col-sm-5">Now</div>
+                            <div class="col-xs-5 col-sm-4">Now</div>
 
                         </div>
                         <div class="row forecast-tile forecast-bordered-container" ng-repeat="x in weather.forecast" ng-click="changeDisplayed(x.id)">
@@ -95,7 +95,7 @@
                             <div class="col-xs-4 col-sm-4 ">
                                 feels like {{x.apparentAverage}}<span ng-bind-html="unit"></span>
                             </div>
-                            <div class="col-xs-5 col-sm-5">{{x.date}}</div>
+                            <div class="col-xs-5 col-sm-4">{{x.date}}</div>
                         </div>
                     </div>
                 </div>
