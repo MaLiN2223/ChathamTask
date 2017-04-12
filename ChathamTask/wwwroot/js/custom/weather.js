@@ -1,7 +1,7 @@
 // API init
 
 const API = {
-    url: "http://codingchallenge.chathamfinancial.com/api/static/"
+    url: "http://codingchallenge.chathamfinancial.com/api/"
 };
 
 var locale = window.navigator.userLanguage || window.navigator.language;
