@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <Content Include="wwwroot\css\weather.css" />
-    <Content Include="wwwroot\images\pexels-photo-147465.jpeg" />
     <Content Include="wwwroot\images\sun.jpeg" />
     <Content Include="wwwroot\js\custom\autosuggest\autosuggest.js" />
     <Content Include="wwwroot\js\custom\autosuggest\icons\magnifying-glass.jpg" />

@@ -16,6 +16,9 @@ moment.locale(locale);
     API.forecastByLocation = function (latitude, longditude, source) {
         return API.url + 'forecast?' + API.locationArguments(latitude, longditude) + '&source=' + source;
     };
+    API.cityById = function (id) {
+        return API.url + 'cities/' + id;
+    }
 }
 )();
 
@@ -23,70 +26,90 @@ moment.locale(locale);
 // Utils
 let now = moment().hours(0);
 let getDate = function (date) {
+    console.log(date);
+
     let tmp = moment(date);
+    console.log(tmp.format("dddd"));
     let diff = Math.ceil(moment(date).hours(0).diff(now, "days", true));
     if (diff === 0) {
         return "Today";
+        //return tmp.format("dddd");
     }
-    else if (diff === 1) {
+    if (diff === 1) {
         return "Tomorrow";
-    }
-    else if (diff === 2) {
-        return "After tomorrow";
     } else {
-        return tmp.format("D MMMM");
+        return tmp.format("dddd");
     }
-}
-class ForecastRecord {
-    constructor(data, id) {
+};
+Number.prototype.round = function () {
+    return Math.round(this);
+};
+
+class Record {
+    constructor(humidity, pressure, clouds) {
+        this.humidity = humidity;
+        this.pressure = pressure;
+        this.clouds = clouds;
+    }
+    get pressureDescription() {
+        return `${this.pressure}hPa`;
+    }
+    get humidityDescription() {
+        let hum = this.humidity * 100;
+        return `${hum}%`;
+    }
+    get coverDescription() {
+        let c = this.clouds;
+        if (c == 0)
+            return "clear sky";
+        if (c < 0.25)
+            return "scattered clouds";
+        if (c < 0.375)
+            return "lightly cloudly";
+        if (c < 0.5)
+            return "partly cloudly";
+        if (c < 0.625)
+            return "cloudly";
+        if (c < 0.75)
+            return "mostly cloudly";
+        if (c < 0.875)
+            return "nearly overcast";
+        if (c < 1)
+            return "overcast";
+        return "sky obscured";
+    }
+};
+class ForecastRecord extends Record {
+    constructor(data, id, unit) {
+        super(data.humidity, data.pressure, data.cloudCover);
         this.date = getDate(data.date);
         this.temperature = {
-            min: data.temperatureMin,
-            max: data.temperatureMax,
-            apparentMin: data.apparentTemperatureMin,
-            apparentMax: data.apparentTemperatureMax,
+            min: data.temperatureMin.round(),
+            max: data.temperatureMax.round(),
+            apparentMin: data.apparentTemperatureMin.round(),
+            apparentMax: data.apparentTemperatureMax.round()
         };
-        this.humidity = data.humidity;
-        this.pressure = data.pressure;
-        this.cloudCover = data.cloudCover;
         this.condition = "cloudy";
         this.id = id;
+        this.unit = unit;
+        this.expanded = true;
+    }
+    get average() {
+        return (this.temperature.min + this.temperature.max) / 2;
+    }
+    get apparentAverage() {
+        return (this.temperature.apparentMin + this.temperature.apparentMax) / 2;
     }
 }
-class CurrentRecord {
+class CurrentRecord extends Record {
     constructor(data) {
+        super(data.humidity, data.pressure, data.cloudCover);
         this.date = "Now";
-        this.temperature = data.temperature;
-        this.humidity = data.humidity;
-        this.pressure = data.pressure;
-        this.cloudCover = data.cloudCover;
+        this.temperature = data.temperature.round();
         this.condition = "cloudy";
         this.id = -1;
+        this.expanded = false;
     }
-}
-let displaytWeatherFromForecast = function (obj) {
-    return {
-        date: obj.date,
-        temperature: (obj.temperature.max + obj.temperature.min) / 2,
-        apparentTemperature: (obj.temperature.apparentMax + obj.temperature.apparentMin) / 2,
-        humidity: obj.humidity,
-        pressure: obj.pressure,
-        cloudCover: obj.cloudCover,
-        condition: obj.condition,
-        id: obj.id
-    };
-}
-let displayWeatherFromCurrent = function (obj) {
-    return {
-        date: obj.date,
-        temperature: obj.temperature,
-        apparentTemperature: obj.apparentTemperature,
-        humidity: obj.humidity,
-        pressure: obj.pressure,
-        cloudCover: obj.cloudCover,
-        condition: obj.condition,
-        id: obj.id
-    };
 }
 
 class CityData {
@@ -104,6 +127,8 @@ let parseWeather = function (data) {
     for (let i = 0; i < arr.length; ++i) {
         output.push(new ForecastRecord(arr[i], i));
     }
+    console.log("parse : ");
+    console.log(output);
     return { today: today, forecast: output };
 }
 let toDropdown = function (city) {
@@ -119,7 +144,7 @@ let parseCity = function (cityData) {
 }
 // end Utils
 
-let weatherApp = angular.module('app', ['autosuggest']);
+let weatherApp = angular.module('app', ['autosuggest', 'ui.toggle']);
 
 weatherApp.factory('locationService', function ($q, $window, $http) {
     function getCurrentPosition() {
@@ -141,10 +166,14 @@ weatherApp.factory('locationService', function ($q, $window, $http) {
     function getCity(lat, long) {
         return $http.get(API.cityByLocation(lat, long));
     };
+    function getCityDataById(id) {
+        return $http.get(API.cityById(id));
+    };
     return {
         getCurrentPosition: getCurrentPosition,
         getCities: getCities,
-        getCity: getCity
+        getCity: getCity,
+        getCityDataById: getCityDataById
     };
 });
 
@@ -157,46 +186,19 @@ weatherApp.factory('weatherService', function ($http) {
     }
 });
 
-
 weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService, weatherService) {
-    const init = function () {
-        $scope.city = {}
-        $scope.weather = {
-            isVisible: false,
-            source: "FORECAST_IO"
-        }
-        $scope.unit = $sce.trustAsHtml("&#8451");
-        $scope.citiesParser = function (data) {
-            data = data.data.predictions;
-            return data.map(parseCity);
-        };
-        $scope.getCities = locationService.getCities;
-        $scope.currentCity = undefined;
-        $scope.changeDisplayed = function (a) {
-            if (a === -1) {
-                $scope.weather.displayed = $scope.weather.today;
-            } else {
-                $scope.weather.displayed = $scope.weather.forecast[a];
-            }
 
-        };
-        $scope.onCitySelect = function (e) {
-            console.log(e);
-        };
-    };
     const refreshWeather = function () {
-        $scope.weather.data = weatherService.getWeather($scope.city.latitude, $scope.city.longitude, $scope.weather.source)
+        $scope.weather.data = weatherService.getWeather($scope.city.latitude, $scope.city.longitude, $scope.source)
             .then(function (response) {
                 const parsed = parseWeather(response.data);
                 $scope.weather.today = parsed.today;
                 $scope.weather.displayed = parsed.today;
+                console.log("parsed forecast ");
+                console.log(parsed.forecast);
                 $scope.weather.forecast = parsed.forecast;
                 $scope.weather.isVisible = true;
             });
-    };
-    const hideWeather = function (reason) {
-        $scope.weather.isVisible = false;
-        $scope.weather.problemReason = reason;
     };
     const setCityByCoords = function (lat, long) {
         locationService.getCity(lat, long).then(function (data) {
@@ -205,26 +207,93 @@ weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService
             $scope.city.id = data.place_id;
         });
     };
+    const setCityById = function (id) {
+        locationService.getCityDataById(id).then(function (response) {
+            let data = response.data.result;
+            $scope.city.latitude = data.geometry.location.lat;
+            $scope.city.longitude = data.geometry.location.lng;
+            refreshWeather();
+        });
+    }
     const updateCityByCoords = function (coords) {
         $scope.city.latitude = coords.latitude;
         $scope.city.longitude = coords.longitude;
         setCityByCoords(coords.latitude, coords.longitude);
-        refreshWeather();
     };
-    const showWeather = function () {
+    const locate = function () {
+        console.log("located");
         locationService.getCurrentPosition().then(function (data) {
-            console.log(data);
             updateCityByCoords(data.coords);
         }, function () {
             $.getJSON("//freegeoip.net/json/?callback=?", function (data) {
-                console.log(data);
                 updateCityByCoords(data);
             });
         });
     };
+
+
+    const initScopeVariables = function () {
+        $scope.degreesDict = {
+            "Celcius": $sce.trustAsHtml("&#8451"),
+            true: $sce.trustAsHtml("&#8451"),
+            "Faranheit": $sce.trustAsHtml("&#8457"),
+            false: $sce.trustAsHtml("&#8457")
+        };
+        $scope.apiDict = {
+            "forecast.io": "FORECAST_IO",
+            true: "FORECAST_IO",
+            "World Weather": "WORLD_WEATHER",
+            false: "WORLD_WEATHER"
+        };
+        $scope.city = {};
+        $scope.apiValue = "forecast.io";
+        $scope.degreesValue = "Celcius";
+        $scope.source = "";
+        $scope.weather = {
+            isVisible: false
+        };
+        $scope.getCities = locationService.getCities;
+        $scope.currentCity = undefined;
+    };
+    const initScopeFunctions = function () {
+        $scope.changeDegrees = function () {
+            $scope.unit = $scope.degreesDict[$scope.degreesValue];
+        }
+        $scope.changeApi = function (noRefresh) {
+            $scope.source = $scope.apiDict[$scope.apiValue];
+            if (!noRefresh)
+                refreshWeather();
+        };
+        $scope.citiesParser = function (data) {
+            data = data.data.predictions;
+            return data.map(parseCity);
+        };
+        $scope.changeDisplayed = function (a) {
+            if (a === -1) {
+                refreshWeather();
+                $scope.weather.displayed = $scope.weather.today;
+            } else {
+                $scope.weather.displayed = $scope.weather.forecast[a];
+            }
+        };
+        $scope.onCitySelect = function (e) {
+            setCityById(e.id);
+        };
+    };
+    const initScopeViaFunctions = function () {
+        $scope.changeDegrees();
+        $scope.changeApi(true);
+    };
+    const init = function () {
+        initScopeVariables();
+        initScopeFunctions();
+        locate();
+        initScopeViaFunctions();
+
+    };
+
     angular.element(function () {
         init();
-        showWeather();
     });
 });
 

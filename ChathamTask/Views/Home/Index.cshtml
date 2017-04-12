@@ -3,48 +3,73 @@
 }
 
 @section Styles {
+    <link href="~/lib/angular-bootstrap-toggle/dist/angular-bootstrap-toggle.css" rel="stylesheet" asp-file-version="true" />
     <link href="~/css/weather.css" rel="stylesheet" asp-file-version="true" />
     <link href="~/js/custom/autosuggest/main.css" rel="stylesheet" asp-file-version="true" />
-    <link href="~/lib/bootstrap/dist/css/bootstrap.css" />
 }
 <div>
 
 
     <div ng-app="app" id="app2">
 
-        <div ng-controller="MainCtrl" class="weather-board forecast-container">
-            <div ng-if="weather.isVisible" class="row">
-                <div class="col-xs-12 col-sm-6  col-md-6 col-lg-6 weather-today" data-ng-model="weather.today" id="left">
+        <div ng-controller="MainCtrl" class="weather-board">
+            <div class="row">
 
-                    <autosuggest get-cities="getCities" parser="citiesParser" on-city-select="onCitySelect"></autosuggest>
-                    <p class="displayed-date">{{weather.displayed.date}}</p>
-                    <div id="weather-today-up">
-                        <div>
-                            <p class="condition">{{weather.displayed.condition}}</p>
+                <div class="col-xs-12 col-sm-12 col-md-11 col-lg-12">
+                    <div class="site-header col-xs-1 col-sm-8">
+                        WEATHER
+                    </div>
+                    <div>
+                        <toggle ng-model="degreesValue" ng-change="changeDegrees()" on="Celcius" off="Farenheit" style="min-width: 200px" onstyle="btn-default" offstyle="btn-default"></toggle>
+                        <br />
+                        <toggle ng-model="apiValue" ng-change="changeApi()" on="forecast.io" off=" World Weather" onstyle="btn-default" offstyle="btn-default"></toggle>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 forecast-container forecast-bordered-container weather-today" data-ng-model="weather.today" id="left">
+                    <autosuggest get-cities="getCities" parser="citiesParser" on-city-select="onCitySelect" displayedCity="{{weather.displayed.city}}"></autosuggest>
+                    <div ng-if="weather.displayed.expanded !==undefined">
+                        <p class="displayed-date">{{weather.displayed.date}}</p>
+                        <div id="weather-today-up" ng-if="weather.displayed.expanded == false">
                             <div>
-                                {{weather.displayed.temperature}}<span ng-bind-html="unit"></span>
+                                <div>
+                                    Current temperature: {{weather.displayed.temperature}}<span ng-bind-html="unit"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div id="weather-today-down">
-                        DOWN
+                        <div ng-if="weather.displayed.expanded == true">
+                            <div>
+                                Max: {{weather.displayed.temperature.max}}
+                                Min: {{weather.displayed.temperature.min}}
+                            </div>
+                        </div>
+                        <div>
+                            Humidity: {{weather.displayed.humidityDescription}}
+                            Pressure: {{weather.displayed.pressureDescription}}
+                            {{weather.displayed.coverDescription}}
+                        </div>
                     </div>
                 </div>
 
-                <div class="col-xs-12 col-sm-7  col-md-5 col-lg-6" id="right">
-                    <div class="forecast-box forecast-tiles">
-                        <div ng-click="changeDisplayed(-1)" class="row forecast-tile">
-                            <div class="col-xs-2 col-sm-3">{{weather.today.temperature}}<span ng-bind-html="unit"></span></div>
-                            <div class="col-xs-4 col-sm-4">feels like  {{weather.today.temperature}}<span ng-bind-html="unit"></span></div>
+                <div class="col-xs-12 col-sm-6  col-md-5 col-lg-6 forecast-container " id="right">
+                    <div class=" forecast-tiles" ng-if="weather.displayed.expanded !==undefined">
+                        <div ng-click="changeDisplayed(-1)" class="row forecast-tile forecast-bordered-container">
+                            <div class="col-xs-1 col-sm-3 ">
+                                {{weather.today.temperature}}<span ng-bind-html="unit"></span>
+                            </div>
+                            <div class="col-xs-4 col-sm-4 ">
+                                feels like {{weather.today.temperature}}<span ng-bind-html="unit"></span>
+                            </div>
                             <div class="col-xs-5 col-sm-5">Now</div>
 
                         </div>
-                        <div class="row forecast-tile" ng-repeat="x in weather.forecast" ng-click="changeDisplayed(x.id)">
-                            <div class="col-xs-2 col-sm-3">
-                                {{(x.temperature.max+x.temperature.max)/2}}<span ng-bind-html="unit"></span>,
+                        <div class="row forecast-tile forecast-bordered-container" ng-repeat="x in weather.forecast" ng-click="changeDisplayed(x.id)">
+                            <div class="col-xs-1 col-sm-3 ">
+                                {{x.average}}<span ng-bind-html="unit"></span>,
                             </div>
-                            <div class="col-xs-4 col-sm-4">
-                                feels like {{(x.temperature.max+x.temperature.max)/2}}<span ng-bind-html="unit"></span>,
+                            <div class="col-xs-4 col-sm-4 ">
+                                feels like {{x.apparentAverage}}<span ng-bind-html="unit"></span>,
                             </div>
                             <div class="col-xs-5 col-sm-5">{{x.date}}</div>
                         </div>
@@ -62,6 +87,8 @@
 
 @section Scripts {
     <script src="~/lib/moment/moment.js"></script>
+    <script src="~/lib/angular-bootstrap-toggle/dist/angular-bootstrap-toggle.js"></script>
     <script src="~/js/custom/autosuggest/autosuggest.js"></script>
     <script src="~/js/custom/weather.js"></script>
 }
+

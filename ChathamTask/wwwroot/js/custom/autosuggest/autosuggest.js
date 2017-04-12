@@ -12,6 +12,7 @@ autosuggest.directive("autosuggest", function () {
             </div>\
             <div>\
                     <ul ng-if="displayed" class="autosuggest-dropdown">\
+                        <li ng-if="len(cities)==0">Loading...<\li>\
                         <li ng-repeat="item in cities" ng-click="select(item)">\
                             <a class="title">{{item.title}}</a>\
                             <a class="subtitle">{{item.subTitle}}</a>\
@@ -40,7 +41,6 @@ autosuggest.directive("autosuggest", function () {
                         200);
                 };
                 $scope.onClick = function () {
-
                     if ($scope.searchCity !== undefined && $scope.searchCity !== "")
                         $scope.displayed = true;
                 };
@@ -54,6 +54,12 @@ autosuggest.directive("autosuggest", function () {
                 };
                 $scope.$watch('searchCity',
                     function (newCity, oldCity) {
+                        console.log("new city = " + newCity);
+                        if (newCity === "") {
+                            $scope.displayed = false;
+                            $scope.cities = [];
+                            return;
+                        }
                         if (newCity === oldCity) return;
 
                         $scope.displayed = true;
@@ -61,15 +67,6 @@ autosuggest.directive("autosuggest", function () {
                             $scope.cities = $scope.parser(data);
                         });
                     });
-                $scope.$watch('cities',
-                    function (newCities, foo2) {
-                        console.log("new cities");
-                    });
-
-                this.city = "";
-                this.update = function () {
-                    console.log(this.searchCity);
-                };
             }
         ],
     }

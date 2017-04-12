@@ -15,16 +15,6 @@
     border-bottom: 1px dotted;
 }
 
-.forecast-box {
-    clear: both;
-    border-color: #f3f3f4;
-    padding: 3px;
-    border-color: #f3f3f4;
-    border-style: solid solid none;
-    border-width: 1px;
-}
-
-
 .forecast-temperature {
     font-size: 25px;
     width: 30%;
@@ -53,26 +43,46 @@
     position: fixed;
 }
 
-.forecast-tiles {
+.forecast-container {
     min-height: 370px;
     font-size: 19px;
-    padding-left: 15px;
-    font-family: "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
-.weather-today {
+.forecast-settings {
 }
 
-.forecast-tile {
-    margin-bottom: 5px;
-    text-align: right;
-    height: 48px;
+.site-header {
+    font-size: 50px;
+}
+
+.forecast-bordered-container {
     background-color: white;
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
     border-radius: 4px;
     -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
     box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+}
+
+.forecast-tiles {
+    clear: both;
+    border-color: #f3f3f4;
+    padding: 3px;
+    border-style: solid solid none;
+    border-width: 1px;
+    padding-left: 15px;
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.weather-today {
+    padding-right: 15px;
+}
+
+
+.forecast-tile {
+    margin-bottom: 5px;
+    text-align: right;
+    height: 48px;
 }
 
     .forecast-tile > div {
@@ -84,73 +94,39 @@
 }
 
 .forecast-tiles :hover {
-    background-color: #fbfbfb;
+    background-color: #f7f7fc;
 }
 
 
 #weather-today-up {
     height: 50%;
 }
-
+ 
 .position {
     clear: both;
 }
 
-/* AUTOCOMPLETE */
-
-.autocomplete {
-    width: 30%;
-    position: relative;
+/*Overrides*/
+.toggle.btn {
+    min-width: 200px;
 }
-
-    .autocomplete input {
-        font-size: 1.2em;
-        width: 100%;
-        padding: 0.4em;
-    }
-
-    .autocomplete ul {
-        position: absolute;
-        left: 0;
-        width: 100%;
-        border-left: 1px solid #888;
-        border-right: 1px solid #888;
-        border-bottom: 1px solid #888;
-        z-index: 1;
-    }
-
-    .autocomplete li {
-        text-align: left;
-        list-style: none;
-        width: 100%;
-        padding: 0.4em;
-        background-color: #fff;
-    }
-
-        .autocomplete li.active {
-            width: 100%;
-            background-color: #4bf;
-        }
-
-    .autocomplete .highlight {
-        background-color: #E2E2E2;
-    }
-
-    .autocomplete li.active .highlight {
-        background: #666;
-        color: #fff;
-    }
-
-
-@media (min-width: 992px) {
+/*MEDIA*/
+@media (min-width: 990px) {
     .forecast-tiles > div {
         padding: 10px 20px 0 0;
     }
 }
-
-@media all and (max-width: 768px) {
-
-    .forecast-tiles > div {
-        padding: 10px 5px 0 0;
+@media (max-width: 990px) {
+    .forecast-tiles {
+        font-size: 18px;
     }
 }
+@media all and (max-width: 768px) {
+     .forecast-tiles {
+         margin-top: 3px;
+         padding: 0;
+     }
+    .forecast-tiles > div {
+        padding: 1px 5px 0 0;
+    }
+} 
