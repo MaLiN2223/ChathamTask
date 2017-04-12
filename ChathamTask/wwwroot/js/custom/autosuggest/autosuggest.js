@@ -39,8 +39,7 @@ autosuggest.directive("autosuggest", function () {
                     },
                         timeout === undefined ? 200 : timeout);
                 };
-                $scope.onClick = function () {
-                    console.log("onclick?");
+                $scope.onClick = function () { 
                     if ($scope.searchCity !== undefined && $scope.searchCity !== "")
                         $scope.displayed = true;
                 };

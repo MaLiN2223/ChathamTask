@@ -1,9 +1,12 @@
 // API init
+
 const API = {
-    url: "http://codingchallenge.chathamfinancial.com/api/static/"
+    url: "http://codingchallenge.chathamfinancial.com/api/"
 };
+
 var locale = window.navigator.userLanguage || window.navigator.language;
 moment.locale(locale);
+
 (function () {
     API.cityByName = API.url + 'cities/search?byName=';
     API.locationArguments = function (latitude, longditude) {
@@ -37,14 +40,14 @@ let getDate = function (date) {
     }
 };
 
-Number.prototype.round = function () {
-    return Number((this.toFixed(1)));
+Number.prototype.round = function (q = 1) {
+    return Number((this.toFixed(q)));
 };
 
 class Record {
     constructor(humidity, pressure, clouds) {
         this.humidity = humidity.round();
-        this.pressure = pressure.round();
+        this.pressure = pressure.round(0);
         this.clouds = clouds;
     }
     get pressureDescription() {
@@ -142,7 +145,7 @@ swapRecordUnit = function (record) {
     }
     return record;
 }
-let parseWeather = function (data) {
+let parseWeather = function (data) { 
     const today = new CurrentRecord(data.currently);
     let arr = data.futureForecasts;
     const output = [];
@@ -151,7 +154,7 @@ let parseWeather = function (data) {
     }
     return { today: today, forecast: output };
 }
-let toDropdown = function (city) {
+let toDropdown = function (city) { 
     return {
         title: city.name,
         subTitle: city.location,
@@ -160,7 +163,7 @@ let toDropdown = function (city) {
 }
 let parseCity = function (cityData) {
     const tmp = cityData.structured_formatting;
-    return toDropdown({ title: tmp.main_text, subTitle: tmp.secondary_text, id: cityData.place_id });
+    return toDropdown({ name: tmp.main_text, location: tmp.secondary_text, id: cityData.place_id });
 }
 // end Utils
 
@@ -218,9 +221,7 @@ weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService
                 $scope.weather.forecast = parsed.forecast;
                 $scope.weather.isVisible = true;
                 $scope.isRefreshing = false;
-
                 $scope.changeDegrees();
-                console.log($scope.unit);
             });
     };
     const setCityByCoords = function (lat, long) {
@@ -259,9 +260,9 @@ weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService
     const initScopeVariables = function () {
         $scope.degreesDict = {
             "Celcius": $sce.trustAsHtml("&#8451"),
-            true: $sce.trustAsHtml("&#8451"),
+            false: $sce.trustAsHtml("&#8451"),
             "Fahrenheit": $sce.trustAsHtml("&#8457"),
-            false: $sce.trustAsHtml("&#8457")
+            true: $sce.trustAsHtml("&#8457")
         };
         $scope.apiDict = {
             "forecast.io": "FORECAST_IO",
@@ -282,7 +283,7 @@ weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService
     const initScopeFunctions = function () {
         $scope.changeDegrees = function () {
 
-            var unit = $scope.degreesValue;
+            var unit = $scope.degreesValue; 
             if ($scope.weather.today !== undefined && $scope.weather.today.unit !== unit) {
                 $scope.weather.today = swapRecordUnit($scope.weather.today);
             }
@@ -294,8 +295,8 @@ weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService
                     }
                     return element;
                 });
-            } 
-            $scope.unit = $scope.degreesDict[$scope.degreesValue];
+            }
+            $scope.unit = $scope.degreesDict[unit];
         }
         $scope.changeApi = function (noRefresh) {
             $scope.source = $scope.apiDict[$scope.apiValue];
