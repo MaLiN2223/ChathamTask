@@ -1,5 +1,6 @@
 ﻿body {
     background-color: #f3f3f4;
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 .weather-board {
@@ -13,15 +14,22 @@
 
 .forecast-row {
     border-bottom: 1px dotted;
-}
-
+} 
 .forecast-temperature {
     font-size: 25px;
     width: 30%;
 }
+.temperature {
+    min-height: 144px;
+}
+.weather-current {
+    font-size: 30px; 
+}
 
-.weather-image {
-    max-height: 150px;
+.weather-additional {
+    padding-left: 15px;
+    padding-top: 10%;
+    padding-right: 10px;
 }
 
 .displayed-date {
@@ -71,11 +79,10 @@
     border-style: solid solid none;
     border-width: 1px;
     padding-left: 15px;
-    font-family: "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 .weather-today {
-    padding-right: 15px;
+    padding: 15px;
 }
 
 
@@ -101,7 +108,7 @@
 #weather-today-up {
     height: 50%;
 }
- 
+
 .position {
     clear: both;
 }
@@ -116,17 +123,59 @@
         padding: 10px 20px 0 0;
     }
 }
+
 @media (max-width: 990px) {
     .forecast-tiles {
         font-size: 18px;
     }
 }
+
 @media all and (max-width: 768px) {
-     .forecast-tiles {
-         margin-top: 3px;
-         padding: 0;
-     }
-    .forecast-tiles > div {
-        padding: 1px 5px 0 0;
+    .forecast-tiles {
+        margin-top: 3px;
+        padding: 0;
     }
-} 
+
+        .forecast-tiles > div {
+            padding: 1px 5px 0 0;
+        }
+}
+
+/*FROM : https://gist.github.com/alexandrevicenzi/680147013e902a4eaa5d */
+
+.glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -ms-animation: spin .7s infinite linear;
+    -webkit-animation: spinw .7s infinite linear;
+    -moz-animation: spinm .7s infinite linear;
+}
+
+@keyframes spin {
+    from {
+        transform: scale(1) rotate(0deg);
+    }
+
+    to {
+        transform: scale(1) rotate(360deg);
+    }
+}
+
+@-webkit-keyframes spinw {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@-moz-keyframes spinm {
+    from {
+        -moz-transform: rotate(0deg);
+    }
+
+    to {
+        -moz-transform: rotate(360deg);
+    }
+}

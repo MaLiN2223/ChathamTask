@@ -7,12 +7,11 @@ autosuggest.directive("autosuggest", function () {
         template: '\
         <div class="dropdown">\
             <div class="input-group" >\
-                <input id="autosuggestFocus" type="text" class="autosuggest-input" ng-model="searchCity" placeholder={{attributes.placeholder}} ng-blur="onBlur()" ng-focus="onClick()" >\
+                <input id="autosuggestFocus" type="text" class="autosuggest-input" ng-model="searchCity"  placeholder={{attributes.placeholder}} ng-blur="onBlur()" ng-focus="onClick()" >\
                 <span class="glyphicon glyphicon-search" ng-click="focusInput()"></span>\
             </div>\
             <div>\
                     <ul ng-if="displayed" class="autosuggest-dropdown">\
-                        <li ng-if="len(cities)==0">Loading...<\li>\
                         <li ng-repeat="item in cities" ng-click="select(item)">\
                             <a class="title">{{item.title}}</a>\
                             <a class="subtitle">{{item.subTitle}}</a>\
@@ -33,35 +32,40 @@ autosuggest.directive("autosuggest", function () {
         },
         controller: [
             '$scope', function ($scope) {
-                $scope.onBlur = function () {
+                $scope.onBlur = function (timeout) {
                     setTimeout(function () {
                         $scope.displayed = false;
                         $scope.$apply();
                     },
-                        200);
+                        timeout === undefined ? 200 : timeout);
                 };
                 $scope.onClick = function () {
+                    console.log("onclick?");
                     if ($scope.searchCity !== undefined && $scope.searchCity !== "")
                         $scope.displayed = true;
                 };
+                $scope.$on('changeCityName',
+                    function (event, a) {
+                        $scope.select({ id: a.city.id, title: a.city.name });
+                        $scope.onBlur(0);
+                    });
+
                 $scope.select = function (e) {
-                    $scope.onCitySelect(e);
                     $scope.searchCity = e.title;
+                    $scope.onCitySelect(e);
                 };
                 $scope.displayed = false;
                 $scope.attributes = {
                     "placeholder": "Find your city...",
                 };
-                $scope.$watch('searchCity',
-                    function (newCity, oldCity) {
-                        console.log("new city = " + newCity);
-                        if (newCity === "") {
+                $scope.watcher = $scope.$watch('searchCity',
+                    function (newCity, oldCity) { 
+                        if (newCity === "" || newCity === undefined) {
                             $scope.displayed = false;
                             $scope.cities = [];
                             return;
                         }
                         if (newCity === oldCity) return;
-
                         $scope.displayed = true;
                         $scope.getCities(newCity).then(function (data) {
                             $scope.cities = $scope.parser(data);

@@ -11,15 +11,17 @@
 
 
     <div ng-app="app" id="app2">
-
         <div ng-controller="MainCtrl" class="weather-board">
             <div class="row">
 
                 <div class="col-xs-12 col-sm-12 col-md-11 col-lg-12">
-                    <div class="site-header col-xs-1 col-sm-8">
+                    <div class="site-header col-xs-1 col-sm-5">
                         WEATHER
                     </div>
-                    <div>
+                    <div class="col-xs-1 col-sm-3" style="padding-top: 10px;">
+                        <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" style="font-size: 50px;" ng-if="isRefreshing == true"></span>
+                    </div>
+                    <div class="col-xs-1 col-sm-1">
                         <toggle ng-model="degreesValue" ng-change="changeDegrees()" on="Celcius" off="Farenheit" style="min-width: 200px" onstyle="btn-default" offstyle="btn-default"></toggle>
                         <br />
                         <toggle ng-model="apiValue" ng-change="changeApi()" on="forecast.io" off=" World Weather" onstyle="btn-default" offstyle="btn-default"></toggle>
@@ -28,26 +30,48 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 forecast-container forecast-bordered-container weather-today" data-ng-model="weather.today" id="left">
-                    <autosuggest get-cities="getCities" parser="citiesParser" on-city-select="onCitySelect" displayedCity="{{weather.displayed.city}}"></autosuggest>
-                    <div ng-if="weather.displayed.expanded !==undefined">
-                        <p class="displayed-date">{{weather.displayed.date}}</p>
-                        <div id="weather-today-up" ng-if="weather.displayed.expanded == false">
-                            <div>
-                                <div>
-                                    Current temperature: {{weather.displayed.temperature}}<span ng-bind-html="unit"></span>
+
+
+                    <div class="row">
+                        <div class="col-xs-8 col-sm-3 col-md-6 col-lg-9">
+                            <autosuggest get-cities="getCities" parser="citiesParser" on-city-select="onCitySelect" displayedCity="{{weather.displayed.city}}"></autosuggest>
+                        </div>
+                        <div class="col-xs-2 col-sm-3 col-md-6 col-lg-3">
+                            <p class="displayed-date">{{weather.displayed.date}}</p>
+                        </div>
+                    </div>
+
+                    <div ng-if="weather.displayed.expanded !==undefined" class="row weather-current">
+
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            Temperature:
+                            <div ng-if="weather.displayed.expanded == false">
+                                <div class="temperature" style="font-size: 100px">
+                                    {{weather.displayed.temperature}}<span class="unit" ng-bind-html="unit"></span>
+                                </div>
+
+                            </div>
+                            <div ng-if="weather.displayed.expanded == true">
+                                <div class="temperature" style="font-size: 60px">
+                                    {{weather.displayed.temperature.min}} - {{weather.displayed.temperature.max}}<span class="unit" ng-bind-html="unit"></span>
                                 </div>
                             </div>
-                        </div>
-                        <div ng-if="weather.displayed.expanded == true">
-                            <div>
-                                Max: {{weather.displayed.temperature.max}}
-                                Min: {{weather.displayed.temperature.min}}
+                            Feels like:
+                            <div ng-if="weather.displayed.expanded == false">
+                                {{weather.displayed.apparentTemperature}}<span class="unit" ng-bind-html="unit"></span>
+                            </div>
+                            <div ng-if="weather.displayed.expanded == true">
+                                {{weather.displayed.temperature.apparentMin}} - {{weather.displayed.temperature.apparentMax}}<span class="unit" ng-bind-html="unit"></span>
                             </div>
                         </div>
-                        <div>
-                            Humidity: {{weather.displayed.humidityDescription}}
-                            Pressure: {{weather.displayed.pressureDescription}}
+
+
+
+                        <div class="row col-xs-12 col-sm-6 col-md-6 col-lg-6 weather-additional">
+                            Humidity: {{weather.displayed.humidityDescription}}<br />
+                            Pressure: {{weather.displayed.pressureDescription}}<br />
                             {{weather.displayed.coverDescription}}
+
                         </div>
                     </div>
                 </div>
@@ -66,10 +90,10 @@
                         </div>
                         <div class="row forecast-tile forecast-bordered-container" ng-repeat="x in weather.forecast" ng-click="changeDisplayed(x.id)">
                             <div class="col-xs-1 col-sm-3 ">
-                                {{x.average}}<span ng-bind-html="unit"></span>,
+                                {{x.average}}<span ng-bind-html="unit"></span>
                             </div>
                             <div class="col-xs-4 col-sm-4 ">
-                                feels like {{x.apparentAverage}}<span ng-bind-html="unit"></span>,
+                                feels like {{x.apparentAverage}}<span ng-bind-html="unit"></span>
                             </div>
                             <div class="col-xs-5 col-sm-5">{{x.date}}</div>
                         </div>

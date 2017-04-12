@@ -4,7 +4,6 @@ const API = {
 };
 var locale = window.navigator.userLanguage || window.navigator.language;
 moment.locale(locale);
-
 (function () {
     API.cityByName = API.url + 'cities/search?byName=';
     API.locationArguments = function (latitude, longditude) {
@@ -26,14 +25,10 @@ moment.locale(locale);
 // Utils
 let now = moment().hours(0);
 let getDate = function (date) {
-    console.log(date);
-
     let tmp = moment(date);
-    console.log(tmp.format("dddd"));
     let diff = Math.ceil(moment(date).hours(0).diff(now, "days", true));
     if (diff === 0) {
-        return "Today";
-        //return tmp.format("dddd");
+        return "Today"; 
     }
     if (diff === 1) {
         return "Tomorrow";
@@ -41,42 +36,42 @@ let getDate = function (date) {
         return tmp.format("dddd");
     }
 };
-Number.prototype.round = function () {
-    return Math.round(this);
+Number.prototype.round = function () { 
+    return Number((this.toFixed(2)));
 };
 
 class Record {
     constructor(humidity, pressure, clouds) {
-        this.humidity = humidity;
-        this.pressure = pressure;
+        this.humidity = humidity.round();
+        this.pressure = pressure.round();
         this.clouds = clouds;
     }
     get pressureDescription() {
-        return `${this.pressure}hPa`;
+        return `${this.pressure} hPa`;
     }
-    get humidityDescription() {
-        let hum = this.humidity * 100;
+    get humidityDescription() { 
+        let hum = (this.humidity * 100).round();
         return `${hum}%`;
     }
     get coverDescription() {
         let c = this.clouds;
         if (c == 0)
-            return "clear sky";
-        if (c < 0.25)
-            return "scattered clouds";
-        if (c < 0.375)
-            return "lightly cloudly";
-        if (c < 0.5)
-            return "partly cloudly";
-        if (c < 0.625)
-            return "cloudly";
-        if (c < 0.75)
-            return "mostly cloudly";
+            return "Clear sky";
+        if (c <= 0.25)
+            return "Scattered clouds";
+        if (c <= 0.375)
+            return "Lightly cloudly";
+        if (c <= 0.5)
+            return "Partly cloudly";
+        if (c <= 0.625)
+            return "Cloudly";
+        if (c <= 0.75)
+            return "Mostly cloudly";
         if (c < 0.875)
-            return "nearly overcast";
+            return "Nearly overcast";
         if (c < 1)
-            return "overcast";
-        return "sky obscured";
+            return "Overcast";
+        return "Sky obscured";
     }
 };
 class ForecastRecord extends Record {
@@ -103,9 +98,11 @@ class ForecastRecord extends Record {
 }
 class CurrentRecord extends Record {
     constructor(data) {
+        console.log(data);
         super(data.humidity, data.pressure, data.cloudCover);
         this.date = "Now";
         this.temperature = data.temperature.round();
+        this.apparentTemperature = data.apparentTemperature.round();
         this.condition = "cloudy";
         this.id = -1;
         this.expanded = false;
@@ -127,8 +124,6 @@ let parseWeather = function (data) {
     for (let i = 0; i < arr.length; ++i) {
         output.push(new ForecastRecord(arr[i], i));
     }
-    console.log("parse : ");
-    console.log(output);
     return { today: today, forecast: output };
 }
 let toDropdown = function (city) {
@@ -189,25 +184,28 @@ weatherApp.factory('weatherService', function ($http) {
 weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService, weatherService) {
 
     const refreshWeather = function () {
+        $scope.isRefreshing = true;
         $scope.weather.data = weatherService.getWeather($scope.city.latitude, $scope.city.longitude, $scope.source)
             .then(function (response) {
                 const parsed = parseWeather(response.data);
                 $scope.weather.today = parsed.today;
                 $scope.weather.displayed = parsed.today;
-                console.log("parsed forecast ");
-                console.log(parsed.forecast);
                 $scope.weather.forecast = parsed.forecast;
                 $scope.weather.isVisible = true;
+                $scope.isRefreshing = false;
             });
     };
     const setCityByCoords = function (lat, long) {
+        $scope.isRefreshing = true;
         locationService.getCity(lat, long).then(function (data) {
             data = data.data;
             [$scope.city.name, $scope.city.country] = data.formatted_address.split(",");
             $scope.city.id = data.place_id;
+            $scope.broadcast();
         });
     };
     const setCityById = function (id) {
+        $scope.isRefreshing = true;
         locationService.getCityDataById(id).then(function (response) {
             let data = response.data.result;
             $scope.city.latitude = data.geometry.location.lat;
@@ -221,7 +219,7 @@ weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService
         setCityByCoords(coords.latitude, coords.longitude);
     };
     const locate = function () {
-        console.log("located");
+        $scope.isRefreshing = true;
         locationService.getCurrentPosition().then(function (data) {
             updateCityByCoords(data.coords);
         }, function () {
@@ -230,8 +228,6 @@ weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService
             });
         });
     };
-
-
     const initScopeVariables = function () {
         $scope.degreesDict = {
             "Celcius": $sce.trustAsHtml("&#8451"),
@@ -263,6 +259,17 @@ weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService
             $scope.source = $scope.apiDict[$scope.apiValue];
             if (!noRefresh)
                 refreshWeather();
+        };
+
+
+        $scope.broadcast = function () {
+            $scope.$broadcast('changeCityName', {
+                target: ['a'],
+                city: {
+                    name: $scope.city.name,
+                    id: $scope.city.id
+                }
+            });
         };
         $scope.citiesParser = function (data) {
             data = data.data.predictions;
