@@ -1,0 +1,181 @@
+﻿body {
+    background-color: #f3f3f4;
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.weather-board {
+    padding-top: 70px;
+    padding-bottom: 70px;
+}
+
+.forecast-table {
+    width: 100%;
+}
+
+.forecast-row {
+    border-bottom: 1px dotted;
+} 
+.forecast-temperature {
+    font-size: 25px;
+    width: 30%;
+}
+.temperature {
+    min-height: 144px;
+}
+.weather-current {
+    font-size: 30px; 
+}
+
+.weather-additional {
+    padding-left: 15px;
+    padding-top: 10%;
+    padding-right: 10px;
+}
+
+.displayed-date {
+    font-size: 42px;
+    float: right;
+}
+
+.city-input {
+    margin-bottom: 10px;
+    width: 50%;
+}
+
+.condition {
+    font-size: 23px;
+}
+
+.temperature-today {
+    width: 30px;
+    position: fixed;
+}
+
+.forecast-container {
+    min-height: 370px;
+    font-size: 19px;
+}
+
+.forecast-settings {
+}
+
+.site-header {
+    font-size: 50px;
+}
+
+.forecast-bordered-container {
+    background-color: white;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+}
+
+.forecast-tiles {
+    clear: both;
+    border-color: #f3f3f4;
+    padding: 3px;
+    border-style: solid solid none;
+    border-width: 1px;
+    padding-left: 15px;
+}
+
+.weather-today {
+    padding: 15px;
+}
+
+
+.forecast-tile {
+    margin-bottom: 5px;
+    text-align: right;
+    height: 48px;
+}
+
+    .forecast-tile > div {
+        padding: 0;
+    }
+
+.forecast-tiles > div {
+    padding: 10px 20px 0 0;
+}
+
+.forecast-tiles :hover {
+    background-color: #f7f7fc;
+}
+
+
+#weather-today-up {
+    height: 50%;
+}
+
+.position {
+    clear: both;
+}
+
+/*Overrides*/
+.toggle.btn {
+    min-width: 200px;
+}
+/*MEDIA*/
+@media (min-width: 990px) {
+    .forecast-tiles > div {
+        padding: 10px 20px 0 0;
+    }
+}
+
+@media (max-width: 990px) {
+    .forecast-tiles {
+        font-size: 18px;
+    }
+}
+
+@media all and (max-width: 768px) {
+    .forecast-tiles {
+        margin-top: 3px;
+        padding: 0;
+    }
+
+        .forecast-tiles > div {
+            padding: 1px 5px 0 0;
+        }
+}
+
+/*FROM : https://gist.github.com/alexandrevicenzi/680147013e902a4eaa5d */
+
+.glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -ms-animation: spin .7s infinite linear;
+    -webkit-animation: spinw .7s infinite linear;
+    -moz-animation: spinm .7s infinite linear;
+}
+
+@keyframes spin {
+    from {
+        transform: scale(1) rotate(0deg);
+    }
+
+    to {
+        transform: scale(1) rotate(360deg);
+    }
+}
+
+@-webkit-keyframes spinw {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@-moz-keyframes spinm {
+    from {
+        -moz-transform: rotate(0deg);
+    }
+
+    to {
+        -moz-transform: rotate(360deg);
+    }
+}

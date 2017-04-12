@@ -1,11 +1,26 @@
 {
-  "name": "asp.net",
+  "name": "ChathamTask",
+  "homepage": "https://github.com/MaLiN2223/ChathamTask",
+  "authors": [
+    "MaLiN2223 <szyszka45@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
   "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "wwwroot/lib",
+    "test",
+    "tests"
+  ],
   "dependencies": {
     "bootstrap": "3.3.7",
-    "jquery": "2.2.0",
-    "jquery-validation": "1.14.0",
-    "jquery-validation-unobtrusive": "3.2.6",
-    "angular": "1.6.3"
+    "angular": "1.6.3", 
+    "jquery": "^3.2.1", 
+    "moment": "2.14.1",
+    "angular-bootstrap-toggle": "^0.1.2"
   }
 }
