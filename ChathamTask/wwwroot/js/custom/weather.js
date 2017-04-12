@@ -117,8 +117,10 @@ class CurrentRecord extends Record {
     }
 }
 
+/// changes record's unit Celcius <-> Fahrenheit
+
 swapRecordUnit = function (record) {
-    if (record.id === -1) { // current
+    if (record.id === -1) { // current (CurrentRecord)
         if (record.unit[0] === "F") {
             record.temperature = ((record.temperature - 32) / 1.8).round();
             record.apparentTemperature = ((record.apparentTemperature - 32) / 1.8).round();
@@ -130,7 +132,7 @@ swapRecordUnit = function (record) {
             record.unit = "Fahrenheit";
         }
     }
-    else {
+    else { // forecast (ForecastRecord)
         if (record.unit[0] === "F") {
             record.temperature.min = ((record.temperature.min - 32) / 1.8).round();
             record.temperature.max = ((record.temperature.max - 32) / 1.8).round();
@@ -149,7 +151,7 @@ swapRecordUnit = function (record) {
     return record;
 }
 
-let parseWeather = function (data) { 
+let parseWeather = function (data) {
     const today = new CurrentRecord(data.currently);
     let arr = data.futureForecasts;
     const output = [];
@@ -158,7 +160,8 @@ let parseWeather = function (data) {
     }
     return { today: today, forecast: output };
 }
-let toDropdown = function (city) { 
+/// converts city data for dropdown format
+let toDropdown = function (city) {
     return {
         title: city.name,
         subTitle: city.location,
@@ -251,7 +254,8 @@ weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService
         $scope.city.longitude = coords.longitude;
         setCityByCoords(coords.latitude, coords.longitude);
     };
-    const locate = function () {
+    // locates user by browser's position or via freegeoip (using IP)
+    const locate = function () { 
         $scope.isRefreshing = true;
         locationService.getCurrentPosition().then(function (data) {
             updateCityByCoords(data.coords);
@@ -261,6 +265,7 @@ weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService
             });
         });
     };
+    // inits
     const initScopeVariables = function () {
         $scope.degreesDict = {
             "Celcius": $sce.trustAsHtml("&#8451"),
@@ -287,7 +292,7 @@ weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService
     const initScopeFunctions = function () {
         $scope.changeDegrees = function () {
 
-            var unit = $scope.degreesValue; 
+            var unit = $scope.degreesValue;
             if ($scope.weather.today !== undefined && $scope.weather.today.unit !== unit) {
                 $scope.weather.today = swapRecordUnit($scope.weather.today);
             }
@@ -345,7 +350,7 @@ weatherApp.controller('MainCtrl', function ($scope, $http, $sce, locationService
         initScopeViaFunctions();
 
     };
-
+    // end inits
     angular.element(function () {
         init();
     });

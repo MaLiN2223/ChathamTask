@@ -1,6 +1,5 @@
-﻿let autosuggest = angular.module('autosuggest', []);
-
-
+﻿
+let autosuggest = angular.module('autosuggest', []);
 autosuggest.directive("autosuggest", function () {
 
     return {
@@ -43,7 +42,7 @@ autosuggest.directive("autosuggest", function () {
                     if ($scope.searchCity !== undefined && $scope.searchCity !== "")
                         $scope.displayed = true;
                 };
-                $scope.$on('changeCityName',
+                $scope.$on('changeCityName', // event from parent
                     function (event, a) {
                         $scope.select({ id: a.city.id, title: a.city.name });
                         $scope.onBlur(0);
@@ -51,7 +50,7 @@ autosuggest.directive("autosuggest", function () {
 
                 $scope.select = function (e) {
                     $scope.searchCity = e.title;
-                    $scope.onCitySelect(e);
+                    $scope.onCitySelect(e); // callback to parent controller
                 };
                 $scope.displayed = false;
                 $scope.attributes = {
